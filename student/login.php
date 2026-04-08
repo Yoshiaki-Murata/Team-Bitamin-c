@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__."/../config/function.php";
+require_once __DIR__."/../inc/function.php";
 ?>
 
-<?php include __DIR__ . "/../template/header.php" ?>
+<?php include __DIR__ . "/../inc/header.php" ?>
 
 <body>
     <main>
