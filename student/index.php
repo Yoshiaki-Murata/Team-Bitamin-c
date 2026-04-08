@@ -1,8 +1,42 @@
-<?php
-require_once __DIR__ . "/../inc/function.php"
+<!-- <?php
+        require_once __DIR__ . "/../inc/function.php";
 
+        $name = $_SESSION["user_name"];
+        $id = $_SESSION["user_id"];
+        $db = db_connect();
+        try {
+            // 必須キャリコンの情報を取得
+            $sql_must = "SELECT ri.id AS reserve_id,rs.date,t.time,m.name AS method_name,c.name AS class_name FROM `reservation_infos` ri
+INNER JOIN reservation_slots rs ON ri.slot_id=rs.id
+INNER JOIN times t ON rs.time_id = t.id
+INNER JOIN methods m ON ri.method_id=m.id
+INNER JOIN classes c ON rs.class_id = c.id
+INNER JOIN carecons ON rs.carecon_id= carecons.id
+WHERE ri.student_id=:id
+AND carecons.id=1";
+            $stmt_must = $db->prepare($sql_must);
+            $stmt_must->bindParam(":user_id", $id, PDO::PARAM_INT);
+            $stmt_must->execute();
+            $result_must = $stmt_must->fetchAll(PDO::FETCH_ASSOC);
 
-?>
+            // キャリコンプラスの情報を取得
+            $sql_plus = "SELECT ri.id AS reserve_id,rs.date,t.time,m.name AS method_name,c.name AS class_name FROM `reservation_infos` ri
+INNER JOIN reservation_slots rs ON ri.slot_id=rs.id
+INNER JOIN times t ON rs.time_id = t.id
+INNER JOIN methods m ON ri.method_id=m.id
+INNER JOIN classes c ON rs.class_id = c.id
+INNER JOIN carecons ON rs.carecon_id= carecons.id
+WHERE ri.student_id=:id
+AND rs.carecon_id=2";
+            $stmt_plus = $db->prepare($sql_plus);
+            $stmt_plus->bindParam(":user_id", $id, PDO::PARAM_INT);
+            $stmt_plus->execute();
+            $result_plus = $stmt_plus->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "エラ‐" . $e->getMessage();
+        }
+
+        ?> -->
 
 <?php include __DIR__ . "/../inc/header.php" ?>
 <main>
@@ -17,17 +51,19 @@ require_once __DIR__ . "/../inc/function.php"
             <table class="table ms-4">
                 <thead>
                     <tr class="row">
-                        <th class="col-3">日付</th>
-                        <th class="col-3">開始時間</th>
-                        <th class="col-3">教室</th>
+                        <th class="col-2">日付</th>
+                        <th class="col-2">開始時間</th>
+                        <th class="col-3">面談方法</th>
+                        <th class="col-2">教室</th>
                         <th class="col-3">操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="row">
-                        <td class="col-3">5/17</td>
-                        <td class="col-3">10:00～</td>
-                        <td class="col-3">6C</td>
+                        <td class="col-2">5/17</td>
+                        <td class="col-2">10:00～</td>
+                        <td class="col-3">対面</td>
+                        <td class="col-2">6C</td>
                         <td class="col-3">
                             <form action="./reserve_del.php" method="post">
                                 <input type="hidden" name="reserve-id" id="reserve-id">
@@ -46,17 +82,19 @@ require_once __DIR__ . "/../inc/function.php"
             <table class="table ms-4">
                 <thead>
                     <tr class="row">
-                        <th class="col-3">日付</th>
-                        <th class="col-3">開始時間</th>
-                        <th class="col-3">教室</th>
+                        <th class="col-2">日付</th>
+                        <th class="col-2">開始時間</th>
+                        <th class="col-3">面談方法</th>
+                        <th class="col-2">教室</th>
                         <th class="col-3">操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="row">
-                        <td class="col-3">5/17</td>
-                        <td class="col-3">10:00～</td>
-                        <td class="col-3">6C</td>
+                        <td class="col-2">5/17</td>
+                        <td class="col-2">10:00～</td>
+                        <td class="col-3">対面</td>
+                        <td class="col-2">6C</td>
                         <td class="col-3">
                             <form action="./reserve_del.php" method="post">
                                 <input type="hidden" name="reserve-id" id="reserve-id">
