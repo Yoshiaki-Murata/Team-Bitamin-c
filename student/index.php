@@ -1,8 +1,9 @@
 <!-- <?php
         require_once __DIR__ . "/../inc/function.php";
 
-        $name = $_SESSION["user_name"];
-        $id = $_SESSION["user_id"];
+        // $name = $_SESSION["user_name"];
+        // $id = $_SESSION["user_id"];
+        $id=2;
         $db = db_connect();
         try {
             // 必須キャリコンの情報を取得
@@ -12,7 +13,7 @@ INNER JOIN times t ON rs.time_id = t.id
 INNER JOIN methods m ON ri.method_id=m.id
 INNER JOIN classes c ON rs.class_id = c.id
 INNER JOIN carecons ON rs.carecon_id= carecons.id
-WHERE ri.student_id=:id
+WHERE ri.student_id=:user_id
 AND carecons.id=1";
             $stmt_must = $db->prepare($sql_must);
             $stmt_must->bindParam(":user_id", $id, PDO::PARAM_INT);
@@ -26,7 +27,7 @@ INNER JOIN times t ON rs.time_id = t.id
 INNER JOIN methods m ON ri.method_id=m.id
 INNER JOIN classes c ON rs.class_id = c.id
 INNER JOIN carecons ON rs.carecon_id= carecons.id
-WHERE ri.student_id=:id
+WHERE ri.student_id=:user_id
 AND rs.carecon_id=2";
             $stmt_plus = $db->prepare($sql_plus);
             $stmt_plus->bindParam(":user_id", $id, PDO::PARAM_INT);
@@ -39,12 +40,14 @@ AND rs.carecon_id=2";
         ?> -->
 
 <?php include __DIR__ . "/../inc/header.php" ?>
+<body>
+    <?php check_array($result_must); ?>
+    <?php check_array($result_plus); ?>
 <main>
     <div class="mb-5">
         <h1>トップページ</h1>
         <p>ようこそ●●さん</p>
     </div>
-
     <div class="mb-5">
         <div class="row">
             <h2 class="mb-3 col-auto">キャリコン予約状況</h2>
@@ -63,18 +66,28 @@ AND rs.carecon_id=2";
                     </tr>
                 </thead>
                 <tbody>
+                    <?php foreach($result_must as $rm): ?>
                     <tr class="row">
-                        <td class="col-2">5/17</td>
-                        <td class="col-2">10:00～</td>
-                        <td class="col-3">対面</td>
-                        <td class="col-2">6C</td>
+                        <td class="col-2">
+                            <?php echo $rm["date"]; ?>
+                        </td>
+                        <td class="col-2">
+                            <?php echo $rm["time"]; ?>
+                        </td>
+                        <td class="col-3">
+                            <?php echo $rm["method_name"]; ?>
+                        </td>
+                        <td class="col-2">
+                            <?php echo $rm["class_name"]; ?>
+                        </td>
                         <td class="col-3">
                             <form action="./reserve_del.php" method="post">
-                                <input type="hidden" name="reserve-id" id="reserve-id">
+                                <input type="hidden" name="reserve-id" id="reserve-id" value="<?php echo $rm["reserve_id"] ?>">
                                 <input type="submit" value="変更申請" class="btn btn-sm btn-danger">
                             </form>
                         </td>
                     </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -115,7 +128,7 @@ AND rs.carecon_id=2";
     </div>
 
     <!-- モ‐ダル -->
-    <dialog class="modal">
+    <dialog class="modal" id=modal>
         <div class="modal-content">
             <select name="date" id="date" class="mb-3 d-inline-block form-select w-auto">
                 <option value="2026-05-09">2026/5/9</option>
@@ -163,3 +176,5 @@ AND rs.carecon_id=2";
         </div>
     </dialog>
 </main>
+<script src="./../js/script.js"></script>
+</body>
