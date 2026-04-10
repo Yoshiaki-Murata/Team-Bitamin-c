@@ -43,23 +43,23 @@ $methods = getColumn($db, 'methods', 'name');
                     <tr class="row">
                         <td class="col-3">変更希望内容</td>
                         <td class="col-3">
-                            <select name="date" class="form-select">
+                            <select name="date" class="form-select" id="js-date">
                                 <?php foreach ($dates as $item):  ?>
-                                    <option value="<?php echo $item["date"]; ?>" id="js-date"><?php echo $item["date"]; ?></option>
+                                    <option value="<?php echo $item["date"]; ?>"><?php echo $item["date"]; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
                         <td class="col-3">
-                            <select name="time" class="form-select">
+                            <select name="time" class="form-select" id="js-time">
                                 <?php foreach ($times as $item):  ?>
-                                    <option value="<?php echo $item["time"]; ?>" id="js-time"><?php echo $item["time"]; ?></option>
+                                    <option value="<?php echo $item["time"]; ?>"><?php echo $item["time"]; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
                         <td class="col-3">
-                            <select name="method" class="form-select">
+                            <select name="method" class="form-select" id="js-method">
                                 <?php foreach ($methods as $item):  ?>
-                                    <option value="<?php echo $item["name"]; ?>" id="js-method"><?php echo $item["name"]; ?></option>
+                                    <option value="<?php echo $item["name"]; ?>"><?php echo $item["name"]; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -68,7 +68,7 @@ $methods = getColumn($db, 'methods', 'name');
             </table>
             <p>枠を交換する場合は相手の名前をご記入ください。また、補足の連絡事項があればご記入ください。</p>
             <form action=""><textarea name="change_text" id="change_text" class="form-control"></textarea></form>
-            <button class="btn btn-primary" id="js-open">変更内容を確認</button>
+            <button type="button" class="btn btn-primary" id="js-open">変更内容を確認</button>
             <a href="./index.php" class="btn btn-info">TOPへ戻る</a>
         </div>
     </main>

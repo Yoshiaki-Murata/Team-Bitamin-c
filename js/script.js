@@ -19,15 +19,15 @@ function modalWrite(cat) {
     const selected = document.getElementById(`js-${cat}`);
     const writeArea = document.getElementById(`js-${cat}-write`);
     writeArea.innerHTML = `<p>${selected.value}</p>`
+    console.log(selected);
 }
 
 openBtn.addEventListener('click', () => {
     modal.showModal();
+    modalWrite('date');
+    modalWrite('time');
+    modalWrite('method');
 });
 closeBtn.addEventListener('click', () => {
     modal.close();
 })
-
-modalWrite('date');
-modalWrite('time');
-modalWrite('method');
