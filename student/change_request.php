@@ -5,7 +5,7 @@ require_once __DIR__ . "/../inc/function.php";
 
 <?php
 $db = db_connect();
-$reserve_id = $_POST['reserve_id'];
+$reserve_id = $_POST['reserve-id'];
 $sql = "SELECT reservation_infos.id AS reserve_id,reservation_slots.date,times.time, methods.name FROM reservation_infos INNER JOIN reservation_slots ON reservation_infos.slot_id = reservation_slots.id INNER JOIN times ON reservation_slots.time_id = times.id INNER JOIN methods ON reservation_infos.method_id = methods.id WHERE reservation_infos.id = :reserve_id";
 $stmt = $db->prepare($sql);
 $stmt->bindParam(':reserve_id', $reserve_id, PDO::PARAM_INT);
