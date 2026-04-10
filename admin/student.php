@@ -45,6 +45,9 @@ require_once './../inc/header.php';
   <div class="l-wrapper">
 
     <h1 class="c-title">学生一覧</h1>
+    <button type="button" class="btn btn-info mb-3" onclick="location.href='student_add.php'">
+      新規訓練生登録
+    </button>
     <form method="GET" class="mb-3 w-25">
       <label class="form-label">クラス選択</label>
       <select name="class_id" class="form-select" onchange="this.form.submit()">
@@ -63,9 +66,6 @@ require_once './../inc/header.php';
           <th scope="col">出席番号</th>
           <th scope="col">名前</th>
           <th scope="col">訓練種別</th>
-          <!-- <th scope="col">入校日</th>
-          <th scope="col">終了予定日</th>
-          <th scope="col">パスワード</th> -->
           <th scope="col">在籍状況</th>
           <th scope="col">操作</th>
         </tr>
@@ -76,9 +76,6 @@ require_once './../inc/header.php';
             <th scope="row"><?php echo h($student['class_name'] . $student['number']); ?></th>
             <td><?php echo h($student['name']); ?></td>
             <td><?php echo h($student['course_name']); ?></td>
-            <!-- <td><?php echo h($student['admission_date']); ?></td>
-            <td><?php echo h($student['graduation_date']); ?></td>
-            <td><?php echo h($student['password']); ?></td> -->
             <td><?php echo h($student['status_name']); ?></td>
             <td>
               <button
@@ -106,7 +103,7 @@ require_once './../inc/header.php';
         <div class="modal-content">
 
           <div class="modal-header">
-            <h5 class="modal-title">学生詳細</h5>
+            <h5 class="modal-title">訓練生詳細</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
 
@@ -135,12 +132,20 @@ require_once './../inc/header.php';
                 <span id="modal-graduation"></span>
               </li>
               <li class="list-group-item d-flex justify-content-between">
+                <span class="fw-bold">ログインID</span>
+                <span id=""></span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
                 <span class="fw-bold">パスワード</span>
                 <span id="modal-pass"></span>
               </li>
               <li class="list-group-item d-flex justify-content-between">
                 <span class="fw-bold">在籍状況</span>
                 <span id="modal-status"></span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
+                <span class="fw-bold">キャリコン予約状況</span>
+                <span id=""></span>
               </li>
             </ul>
 
