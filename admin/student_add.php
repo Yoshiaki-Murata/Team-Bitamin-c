@@ -76,7 +76,7 @@ require_once './../inc/header.php';
       </div>
       <div class="form-group">
         <label class="mb-3 fw-bold">ログインID</label>
-        <input type="text" name="login-id" class="form-control mb-5" maxlength="255" placeholder="2025116c00" required>
+        <input type="text" name="login-id" class="form-control mb-5" maxlength="255" placeholder="年月教室番号2026026a00" required>
       </div>
       <div class="form-group">
         <label class="mb-3 fw-bold">パスワード</label>
@@ -85,12 +85,13 @@ require_once './../inc/header.php';
       <div class="form-group">
         <label class="mb-3 fw-bold">在籍状況</label>
         <select name="status_id" id="status_id" class="form-control form-control-sm mb-5" aria-label="Small select example" required>
-          <option value="" class="text-secondary">在籍状況</option>
+          <option value="" class="text-secondary">在籍</option>
           <?php foreach ($statuses as  $status): ?>
             <option value="<?php echo h($status["id"]); ?>">
               <?php echo h($status["name"]); ?>
             </option>
           <?php endforeach; ?>
+
         </select>
       </div>
       <div class="mb-5 text-center">
