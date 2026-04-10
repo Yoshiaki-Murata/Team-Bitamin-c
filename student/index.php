@@ -36,7 +36,6 @@ AND rs.carecon_id=2";
         } catch (PDOException $e) {
             echo "エラ‐" . $e->getMessage();
         }
-
         ?> -->
 
 <?php include __DIR__ . "/../inc/header.php" ?>
@@ -128,90 +127,41 @@ AND rs.carecon_id=2";
             </div>
         </div>
 
-<<<<<<< HEAD
-    <div class="mb-4">
-        <h2 class="mb-3">キャリコンプラス予約状況</h2>
-        <div class="mb-3">
-            <table class="table ms-4">
-                <thead>
-                    <tr class="row">
-                        <th class="col-2">日付</th>
-                        <th class="col-2">開始時間</th>
-                        <th class="col-3">面談方法</th>
-                        <th class="col-2">教室</th>
-                        <th class="col-3">操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="row">
-                        <td class="col-2">5/17</td>
-                        <td class="col-2">10:00～</td>
-                        <td class="col-3">対面</td>
-                        <td class="col-2">6C</td>
-                        <td class="col-3">
-                            <form action="./cancel_request.php" method="post">
-                                <input type="hidden" name="reserve-id" id="reserve-id">
-                                <input type="submit" value="キャンセル申請" class="btn btn-sm btn-danger">
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="text-center">
-            <a href="./reserve_add.php" class="btn btn-warning">予約する</a>
-        </div>
-    </div>
-=======
-        <!-- モ‐ダル -->
-        <dialog class="modal" id=modal>
-            <div class="modal-content">
-                <select name="date" id="date" class="mb-3 d-inline-block form-select w-auto">
-                    <option value="2026-05-09">2026/5/9</option>
-                    <option value="2026-05-16">2026/5/16</option>
-                    <option value="2026-05-23">2026/5/23</option>
-                </select>
-                <table>
+        <div class="mb-4">
+            <h2 class="mb-3">キャリコンプラス予約状況</h2>
+            <div class="mb-3">
+                <table class="table ms-4">
                     <thead>
-                        <tr>
-                            <th>時間</th>
-                            <th>予約者</th>
+                        <tr class="row">
+                            <th class="col-2">日付</th>
+                            <th class="col-2">開始時間</th>
+                            <th class="col-3">面談方法</th>
+                            <th class="col-2">教室</th>
+                            <th class="col-3">操作</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>10:00</td>
-                            <td>田中</td>
-                        </tr>
-                        <tr>
-                            <td>11:00</td>
-                            <td>田中</td>
-                        </tr>
-                        <tr>
-                            <td>12:00</td>
-                            <td>田中</td>
-                        </tr>
-                        <tr>
-                            <td>13:00</td>
-                            <td>田中</td>
-                        </tr>
-                        <tr>
-                            <td>14:00</td>
-                            <td>田中</td>
-                        </tr>
-                        <tr>
-                            <td>15:00</td>
-                            <td>田中</td>
-                        </tr>
-                        <tr>
-                            <td>16:00</td>
-                            <td>田中</td>
+                        <tr class="row">
+                            <td class="col-2">5/17</td>
+                            <td class="col-2">10:00～</td>
+                            <td class="col-3">対面</td>
+                            <td class="col-2">6C</td>
+                            <td class="col-3">
+                                <form action="./cancel_request.php" method="post">
+                                    <input type="hidden" name="reserve-id" id="reserve-id">
+                                    <input type="submit" value="キャンセル申請" class="btn btn-sm btn-danger">
+                                </form>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
->>>>>>> change-request.php
-
             </div>
+            <div class="text-center">
+                <a href="./reserve_add.php" class="btn btn-warning">予約する</a>
+            </div>
+        </div>
+
+        </div>
         </dialog>
     </main>
     <script src="./../js/script.js"></script>
