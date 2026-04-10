@@ -45,21 +45,21 @@ $methods = getColumn($db, 'methods', 'name');
                         <td class="col-3">
                             <select name="date" class="form-select">
                                 <?php foreach ($dates as $item):  ?>
-                                    <option value="<?php echo $item["date"]; ?>"><?php echo $item["date"]; ?></option>
+                                    <option value="<?php echo $item["date"]; ?>" id="js-date"><?php echo $item["date"]; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
                         <td class="col-3">
                             <select name="time" class="form-select">
                                 <?php foreach ($times as $item):  ?>
-                                    <option value="<?php echo $item["time"]; ?>"><?php echo $item["time"]; ?></option>
+                                    <option value="<?php echo $item["time"]; ?>" id="js-time"><?php echo $item["time"]; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
                         <td class="col-3">
                             <select name="method" class="form-select">
                                 <?php foreach ($methods as $item):  ?>
-                                    <option value="<?php echo $item["name"]; ?>"><?php echo $item["name"]; ?></option>
+                                    <option value="<?php echo $item["name"]; ?>" id="js-method"><?php echo $item["name"]; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -68,10 +68,37 @@ $methods = getColumn($db, 'methods', 'name');
             </table>
             <p>枠を交換する場合は相手の名前をご記入ください。また、補足の連絡事項があればご記入ください。</p>
             <form action=""><textarea name="change_text" id="change_text" class="form-control"></textarea></form>
-            <button class="btn btn-primary">変更内容を確認</button>
+            <button class="btn btn-primary" id="js-open">変更内容を確認</button>
             <a href="./index.php" class="btn btn-info">TOPへ戻る</a>
         </div>
     </main>
+
+    <!-- modal -->
+    <dialog id="js-modal" class="modal-dialog p-3 border rounded shadow">
+        <div class="modal-content p-3">
+
+            <h2 class="modal-header fs-5 border-bottom pb-2 mb-3">
+                変更希望内容
+            </h2>
+
+            <div class="modal-body">
+                <table class="table text-center align-middle">
+                    <tr class="row">
+                        <td id="js-date-write" class="col-4"></td>
+                        <td id="js-time-write" class="col-4"></td>
+                        <td id="js-method-write" class="col-4"></td>
+                    </tr>
+                </table>
+
+                <p class="text-muted">textareaの内容をここに表示</p>
+            </div>
+
+            <div class="modal-footer mt-3">
+                <button class="btn btn-primary">送信</button>
+                <button class="btn btn-secondary" id="js-close">閉じる</button>
+            </div>
+        </div>
+    </dialog>
     <script src="./../js/script.js"></script>
 </body>
 
