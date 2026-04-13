@@ -115,7 +115,6 @@ require_once './../inc/header.php';
     </div>
 
     <!-- 削除モーダル -->
-    <!-- 削除モーダル -->
     <div class="modal fade" id="delConsultantModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
