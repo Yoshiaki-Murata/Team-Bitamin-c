@@ -16,7 +16,7 @@ INNER JOIN carecons ON rs.carecon_id= carecons.id
 WHERE ri.student_id=:user_id
 AND carecons.id=1";
             $stmt_must = $db->prepare($sql_must);
-            $stmt_must->bindParam(":user_id", $id, PDO::PARAM_INT);
+            $stmt_must->bindParam(":login_id", $login_id, PDO::PARAM_INT);
             $stmt_must->execute();
             $result_must = $stmt_must->fetchAll(PDO::FETCH_ASSOC);
 
@@ -27,10 +27,10 @@ INNER JOIN times t ON rs.time_id = t.id
 INNER JOIN methods m ON ri.method_id=m.id
 INNER JOIN classes c ON rs.class_id = c.id
 INNER JOIN carecons ON rs.carecon_id= carecons.id
-WHERE ri.student_id=:user_id
+WHERE ri.student_id=:login_id
 AND rs.carecon_id=2";
             $stmt_plus = $db->prepare($sql_plus);
-            $stmt_plus->bindParam(":user_id", $id, PDO::PARAM_INT);
+            $stmt_plus->bindParam(":login_id", $login_id, PDO::PARAM_INT);
             $stmt_plus->execute();
             $result_plus = $stmt_plus->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
