@@ -55,8 +55,8 @@ require_once './../inc/header.php';
     <table class="table">
       <thead>
         <tr>
-          <th>名前</th>
-          <th>操作</th>
+          <th scope="col">名前</th>
+          <th scope="col">操作</th>
         </tr>
       </thead>
       <tbody>
