@@ -5,14 +5,14 @@ check_array($_POST);
 
 if (!empty($_POST)) {
     if (!empty($_POST['login_id']) && !empty($_POST['password'])) {
-        $name = $_POST['login_id'];
+        $login_id = $_POST['login_id'];
         $password = $_POST['password'];
 
         try {
             $db = db_connect();
-            $sql = 'SELECT * FROM students WHERE login_id=:name';
+            $sql = 'SELECT * FROM admins WHERE login_id=:login_id';
             $stmt = $db->prepare($sql);
-            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':login_id', $login_id, PDO::PARAM_STR);
             $stmt->execute();
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
