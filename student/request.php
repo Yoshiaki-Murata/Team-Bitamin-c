@@ -18,7 +18,7 @@ WHERE rs.reserve_status_id=1";
 <?php include __DIR__ . "/../inc/header.php" ?>
 <!-- <?php check_array($date); ?> -->
 <main class="l-wrapper">
-    <h1 class="c-title">予約画面</h1>
+    <h1 class="c-title">キャリコンプラス予約画面</h1>
     <div class="text-center">
         <select name="date" id="dateSelect" class="mb-3 d-inline-block form-select w-auto">
             <?php foreach ($result as $r): ?>
@@ -38,7 +38,7 @@ WHERE rs.reserve_status_id=1";
     <dialog>
         <div>
             <h2 class="text-center mb-4">予約情報</h2>
-            <table class="table">
+            <table class="table" id="modalTable">
                 <thead>
                     <th class="text-center">日付</th>
                     <th class="text-center">時間</th>
