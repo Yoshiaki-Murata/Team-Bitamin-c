@@ -20,7 +20,6 @@ WHERE ri.student_id=:user_id AND ri.method_id=1";
             $result_must = $stmt_must->fetchAll(PDO::FETCH_ASSOC);
 
             // キャリコンプラスの情報を取得
-<<<<<<< HEAD
             $sql_plus = "SELECT ri.id,ti.time,mt.name AS method_name,cl.name AS class_name FROM reservation_infos ri 
 INNER JOIN reservation_slots rsl ON ri.slot_id = rsl.id
 INNER JOIN methods mt ON ri.method_id= mt.id
@@ -28,7 +27,6 @@ INNER JOIN times ti ON rsl.time_id = ti.id
 LEFT JOIN classes cl ON rsl.class_id = cl.id
 LEFT JOIN carecons cr ON rsl.carecon_id =cr.id
 WHERE ri.student_id=:user_id AND ri.method_id=2";
-=======
             $sql_plus = "SELECT ri.id AS reserve_id,rs.date,t.time,m.name AS method_name,c.name AS class_name FROM `reservation_infos` ri
 INNER JOIN reservation_slots rs ON ri.slot_id=rs.id
 INNER JOIN times t ON rs.time_id = t.id
@@ -37,7 +35,6 @@ INNER JOIN classes c ON rs.class_id = c.id
 INNER JOIN carecons ON rs.carecon_id= carecons.id
 WHERE ri.student_id=:login_id
 AND rs.carecon_id=2";
->>>>>>> s-login
             $stmt_plus = $db->prepare($sql_plus);
             $stmt_plus->bindParam(":login_id", $login_id, PDO::PARAM_INT);
             $stmt_plus->execute();
