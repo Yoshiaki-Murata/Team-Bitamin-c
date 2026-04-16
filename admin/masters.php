@@ -30,8 +30,8 @@ require_once './../inc/header_admin.php';
                     <tr class="row">
                         <td class="col"><?php echo $person["name"]; ?></td>
                         <td class="col"><?php echo $person["login_id"] ?></td>
-                        <td><a class="btn btn-warning col">編集</a></td>
-                        <td><a class="btn btn-danger col">削除</a></td>
+                        <td class="col"><a class="btn btn-warning">編集</a></td>
+                        <td class="col"><a class="btn btn-danger">削除</a></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
