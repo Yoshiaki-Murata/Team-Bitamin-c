@@ -15,7 +15,7 @@ WHERE rs.reserve_status_id=1";
 }
 ?>
 
-<?php include __DIR__ . "/../inc/header.php" ?>
+<?php include __DIR__ . "/../inc/header_student.php" ?>
 <!-- <?php check_array($date); ?> -->
 <main class="l-wrapper">
     <h1 class="c-title">キャリコンプラス予約画面</h1>
@@ -63,9 +63,9 @@ WHERE rs.reserve_status_id=1";
                     </td>
                 </tbody>
             </table>
-                <button class="btn btn-warning" id="modalClose">
-                    閉じる
-                </button>
+            <button class="btn btn-warning" id="modalClose">
+                閉じる
+            </button>
         </div>
     </dialog>
 
