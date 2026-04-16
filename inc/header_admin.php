@@ -13,16 +13,49 @@
 </head>
 
 <body>
-    <header>
+    <header class="l-header">
         <nav class="bg-body-tertiary">
             <ul class="nav justify-content-center">
-                <li class="nav-item"><a href="/team-vitamin-c/admin/index.php" class="nav-link">トップ</a></li>
-                <li class="nav-item"><a href="/team-vitamin-c/admin/masters.php" class="nav-link">管理者</a></li>
-                <li class="nav-item"><a href="/team-vitamin-c/admin/students.php" class="nav-link">訓練生</a></li>
-                <li class="nav-item"><a href="/team-vitamin-c/admin/consuls.php" class="nav-link">コンサルタント</a></li>
-                <li class="nav-item"><a href="/team-vitamin-c/admin/schedule.php" class="nav-link">予約枠</a></li>
-                <li class="nav-item"><a href="/team-vitamin-c/admin/request.php" class="nav-link">申請</a></li>
-                <li class="nav-item"><a href="/team-vitamin-c/admin/logout_do.php" class="btn  btn-outline-secondary">ログアウト</a></li>
+                <li class="nav-item ">
+                    <a href="./index.php" class="nav-link text-reset">
+                        トップ
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="./masters.php" class="nav-link text-reset">
+                        管理者
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="./students.php" class="nav-link text-reset">
+                        訓練生
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="./consuls.php" class="nav-link text-reset">
+                        コンサルタント
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="./schedule.php" class="nav-link text-reset">
+                        予約枠
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="./request.php" class="nav-link text-reset">
+                        申請
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="./reservation.php" class="nav-link text-reset">
+                        予約情報
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="./logout_do.php" class="btn  btn-outline-secondary">
+                        ログアウト
+                    </a>
+                </li>
             </ul>
         </nav>
     </header>
