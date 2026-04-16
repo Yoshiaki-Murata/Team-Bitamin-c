@@ -31,6 +31,10 @@ WHERE rs.reserve_status_id=1";
         <ul id=reserveInfo class="row mx-auto list-unstyled justify-content-center">
         </ul>
     </div>
+    <div class="text-center">
+        <a href="./index.php" class="btn btn-warning">戻る</a>
+    </div>
+
 
 
 
