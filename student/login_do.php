@@ -9,7 +9,8 @@ if (!empty($_POST)) {
 
         try {
             $db = db_connect();
-            $sql = 'SELECT * FROM students WHERE login_id=:login_id';
+            $sql = 'SELECT * FROM students 
+            WHERE login_id=:login_id';
             $stmt = $db->prepare($sql);
             $stmt->bindParam(':login_id', $login_id, PDO::PARAM_STR);
             $stmt->execute();
@@ -21,6 +22,7 @@ if (!empty($_POST)) {
                 if ($password == $result['password']) {
                     $_SESSION['user_id'] = $result['id'];
                     $_SESSION['user_name'] = $result['name'];
+                    $_SESSION["user_class_id"]=$result["class_id"];
                     header('location:index.php');
                     exit();
                 }

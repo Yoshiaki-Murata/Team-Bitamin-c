@@ -1,50 +1,51 @@
-<!-- <?php
-        require_once __DIR__ . "/../inc/function.php";
+<?php
+require_once __DIR__ . "/../inc/function.php";
 
-        $name = $_SESSION["user_name"];
-        $login_id = $_SESSION["user_id"];
-        $db = db_connect();
-        try {
-            // 必須キャリコンの情報を取得
-            $sql_must = "SELECT ri.id,ti.time,rsl.date,mt.name AS method_name,cl.name AS class_name FROM reservation_infos ri 
-INNER JOIN reservation_slots rsl ON ri.slot_id = rsl.id
-INNER JOIN methods mt ON ri.method_id= mt.id
-INNER JOIN times ti ON rsl.time_id = ti.id
-LEFT JOIN classes cl ON rsl.class_id = cl.id
-LEFT JOIN carecons cr ON rsl.carecon_id =cr.id
-WHERE ri.student_id=:login_id AND ri.method_id=1";
-            $stmt_must = $db->prepare($sql_must);
-            $stmt_must->bindParam(":login_id", $login_id, PDO::PARAM_INT);
-            $stmt_must->execute();
-            $result_must = $stmt_must->fetchAll(PDO::FETCH_ASSOC);
+$name = $_SESSION["user_name"];
+$login_id = $_SESSION["user_id"];
+$db = db_connect();
+try {
+    // 必須キャリコンの情報を取得
+    $sql_must = "SELECT ri.id,ti.time,rsl.date,mt.name AS method_name,cl.name AS class_name FROM reservation_infos ri 
+            INNER JOIN reservation_slots rsl ON ri.slot_id = rsl.id
+            INNER JOIN methods mt ON ri.method_id= mt.id
+            INNER JOIN times ti ON rsl.time_id = ti.id
+            LEFT JOIN classes cl ON rsl.class_id = cl.id
+            LEFT JOIN carecons cr ON rsl.carecon_id =cr.id
+            WHERE ri.student_id=:login_id AND ri.method_id=1";
+    $stmt_must = $db->prepare($sql_must);
+    $stmt_must->bindParam(":login_id", $login_id, PDO::PARAM_INT);
+    $stmt_must->execute();
+    $result_must = $stmt_must->fetchAll(PDO::FETCH_ASSOC);
 
-            // キャリコンプラスの情報を取得
-            $sql_plus = "SELECT ri.id,ti.time,rsl.date,mt.name AS method_name,cl.name AS class_name FROM reservation_infos ri 
-INNER JOIN reservation_slots rsl ON ri.slot_id = rsl.id
-INNER JOIN methods mt ON ri.method_id= mt.id
-INNER JOIN times ti ON rsl.time_id = ti.id
-LEFT JOIN classes cl ON rsl.class_id = cl.id
-LEFT JOIN carecons cr ON rsl.carecon_id =cr.id
-WHERE ri.student_id=:login_id AND ri.method_id=2";
-            
-            $stmt_plus = $db->prepare($sql_plus);
-            $stmt_plus->bindParam(":login_id", $login_id, PDO::PARAM_INT);
-            $stmt_plus->execute();
-            $result_plus = $stmt_plus->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            echo "エラ‐" . $e->getMessage();
-        }
-        ?> -->
+    // キャリコンプラスの情報を取得
+    $sql_plus = "SELECT ri.id,ti.time,rsl.date,mt.name AS method_name,cl.name AS class_name FROM reservation_infos ri 
+            INNER JOIN reservation_slots rsl ON ri.slot_id = rsl.id
+            INNER JOIN methods mt ON ri.method_id= mt.id
+            INNER JOIN times ti ON rsl.time_id = ti.id
+            LEFT JOIN classes cl ON rsl.class_id = cl.id
+            LEFT JOIN carecons cr ON rsl.carecon_id =cr.id
+            WHERE ri.student_id=:login_id AND ri.method_id=2";
+
+    $stmt_plus = $db->prepare($sql_plus);
+    $stmt_plus->bindParam(":login_id", $login_id, PDO::PARAM_INT);
+    $stmt_plus->execute();
+    $result_plus = $stmt_plus->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "エラ‐" . $e->getMessage();
+}
+?>
 
 <?php include __DIR__ . "/../inc/header_student.php" ?>
 
 <body>
     <!-- <?php check_array($result_must); ?> -->
     <!-- <?php check_array($result_plus); ?> -->
+    <?php check_array($_SESSION); ?>
     <main class="l-wrapper">
         <div class="mb-5">
             <h1 class="c-title">トップページ</h1>
-            <p>ようこそ<?php echo "  ".$_SESSION["user_name"]."  "; ?>さん</p>
+            <p>ようこそ<?php echo "  " . $_SESSION["user_name"] . "  "; ?>さん</p>
         </div>
         <div class="mb-5">
             <div class="row">
@@ -142,6 +143,30 @@ WHERE ri.student_id=:login_id AND ri.method_id=2";
                 <a href="./request.php" class="btn btn-warning">予約する</a>
             </div>
         </div>
+
+        <dialog class="dialog">
+            <div class="mb-4">
+                <h2 class="text-center mb-5">
+                    キャリコン　予約情報
+                </h2>
+                <select name="modalDate" id="modalDate" class="form-select mx-auto w-50 mb-4">
+                    <option value="2026-04-18">2026-04-18</option>
+                    <option value="2026-04-25">2026-04-25</option>
+                </select>
+                <table class="table" id="modalTable">
+                    <thead>
+                        <th class="text-center">日付</th>
+                        <th class="text-center">時間帯</th>
+                        <th class="text-center">予約者</th>
+                        <th class="text-center">所属クラス</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn btn-warning mx-auto" id="closeModal">閉じる</button>
+        </dialog>
+            
     </main>
-    <script src="./../js/script.js"></script>
+    <script src="./../js/student.js"></script>
 </body>
