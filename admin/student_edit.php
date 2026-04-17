@@ -78,7 +78,7 @@ require_once './../inc/header_admin.php';
 			<input type="date" name="admission_date" class="form-control mb-3" required
 				value="<?php echo h($student['admission_date']); ?>">
 
-			<label>終了予定日</label>
+			<label>修了予定日</label>
 			<input type="date" name="graduation_date" class="form-control mb-3" required
 				value="<?php echo h($student['graduation_date']); ?>">
 
