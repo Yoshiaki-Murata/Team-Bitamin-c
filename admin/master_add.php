@@ -19,25 +19,31 @@ require_once './../inc/header_admin.php';
             <table class="table mx-auto">
                 <tbody>
                     <tr class="row p-4">
-                        <td class="text-center">
+                        <td class="col">
+                            <p class="fw-bold">管理者名</p>
+                        </td>
+                        <td class="col">
                             <label for="name" class="col">
-                                <p class="fw-bold">管理者名</p>
                                 <input type="text" class="form-control" id="name" name="name">
                             </label>
                         </td>
                     </tr>
                     <tr class="row p-4">
-                        <td class="text-center">
+                        <td class="col">
+                            <p class="fw-bold">ログインID</p>
+                        </td>
+                        <td class="col">
                             <label for="login-id" class="col">
-                                <p class="fw-bold">ログインID</p>
                                 <input type="text" class="form-control" id="login-id" name="login_id">
                             </label>
                         </td>
                     </tr>
                     <tr class="row p-4">
-                        <td class="text-center">
+                        <td class="col">
+                            <p class="fw-bold">パスワード<span class="fw-normal"> ※数字8桁</span></p>
+                        </td>
+                        <td class="col">
                             <label for="pass" class="col">
-                                <p class="fw-bold">パスワード<span class="fw-normal"> ※数字8桁</span></p>
                                 <input type="text" class="form-control" id="pass" name="pass">
                             </label>
                         </td>
