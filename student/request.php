@@ -2,7 +2,20 @@
 require_once __DIR__ . "/../inc/function.php";
 
 $db = db_connect();
+$student_id = $_SESSION["user_id"];
 try {
+    // 自分が予約している日付を検索する
+    $sql_check="SELECT DISTINCT rs.date
+    FROM reservation_infos ri 
+    INNER JOIN reservation_slots rs ON ri.slot_id=rs.id
+    WHERE ri.student_id=:student_id";
+    $stmt_check=$db->prepare($sql_check);
+    $stmt_check->execute([
+        ":student_id"=>$student_id
+    ]);
+    $result_check=$stmt_check->fetchAll(PDO::FETCH_ASSOC);
+    
+
     // 予約可能な枠がある日の情報を取得する
     $sql_reserve = "SELECT DISTINCT rs.date
     FROM reservation_slots rs
