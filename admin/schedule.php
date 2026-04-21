@@ -418,11 +418,10 @@ require_once './../inc/header_admin.php';
   const line = document.getElementById('line-box');
   if (date.value) {
     line.disabled = false;
-    // 全日程の時は全ラインを選択する
-    line.value = "";
   } else {
     line.disabled = true;
   }
+
   // ここまで
 
   document.addEventListener('DOMContentLoaded', () => {
