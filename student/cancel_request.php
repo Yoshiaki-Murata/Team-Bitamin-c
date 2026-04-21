@@ -6,7 +6,7 @@ require_once __DIR__ . "/../inc/function.php";
 <?php
 $db = db_connect();
 // クリックされた予約情報を取得
- $reserve_id = $_POST['reserve-id'];
+$reserve_id = $_POST['reserve-id'];
 // $reserve_id = 4;
 $sql = "SELECT 
 reservation_infos.id AS reserve_id,
@@ -39,8 +39,9 @@ $methods = $method_stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>キャンセル申請</title>
 </head>
+
 <body>
-    <form action="./cancel_request_do.php" method="post">
+    <form action="./cancel_request_do.php" method="post" id="cancelForm">
         <main class="container mt-5 l-wrapper">
             <h1 class="mb-5 text-center">キャンセル申請</h1>
             <div class="text-center">
@@ -56,8 +57,9 @@ $methods = $method_stmt->fetchAll(PDO::FETCH_ASSOC);
                         </tr>
                     </tbody>
                 </table>
-                <p>希望日時、枠を交換する場合は相手の名前をご記入ください。また、補足の連絡事項があればご記入ください。</p>
-                <textarea name="text" id="js-text" class="form-control"></textarea>
+                <label for="message">キャンセル理由（必須）と変更希望日時があればご記入ください。<br>
+                    また、面談方法の変更を希望する場合や補足の連絡事項があればご記入ください。</label>
+                <textarea name="message" id="message" class="form-control" required></textarea>
                 <button type="button" class="btn btn-primary" id="js-open">内容を確認</button>
                 <a href="./index.php" class="btn btn-info">TOPへ戻る</a>
             </div>
@@ -88,19 +90,35 @@ $methods = $method_stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <script>
         // change_request
+        const form = document.getElementById('cancelForm');
+        const textarea = document.getElementById('message');
         const openBtn = document.getElementById('js-open');
         const closeBtn = document.getElementById('js-close');
         const modal = document.getElementById('js-modal');
-
+        const writeArea = document.getElementById('js-text-write');
+        // 「内容を確認」ボタンを押した時の処理
         openBtn.addEventListener('click', () => {
+            event.preventDefault(); // 送信動作を確実にストップさせる
+            const value = textarea.value.trim();
+
+            if (value === "") {
+                alert("文字を入力してください（スペースのみは不可）");
+                return; // 処理を中断してモーダルを開かせない
+            }
+            // 入力内容をモーダルに反映
+            writeArea.textContent = value;
             modal.showModal();
-            const element = document.getElementById('js-text');
-            const writeArea = document.getElementById('js-text-write');
-            writeArea.textContent = element.value;
         });
         closeBtn.addEventListener('click', () => {
             modal.close();
-        })
+        });
+        // 最終的な送信時のチェック（念のため）
+        form.addEventListener('submit', (event) => {
+            if (textarea.value.trim() === "") {
+                alert("入力してください");
+                event.preventDefault();
+            }
+        });
     </script>
 </body>
 
