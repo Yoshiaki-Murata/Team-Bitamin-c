@@ -163,10 +163,8 @@ try {
                 </select>
                 <table class="table" id="modalTable">
                     <thead>
-                        <th class="text-center">日付</th>
                         <th class="text-center">時間帯</th>
                         <th class="text-center">予約者</th>
-                        <th class="text-center">所属クラス</th>
                     </thead>
                     <tbody>
                     </tbody>
