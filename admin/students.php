@@ -273,10 +273,6 @@ require_once './../inc/header_admin.php';
     const del = document.getElementById('modal-delete-btn');
     del.href = 'student_del.php?id=' + btn.dataset.id;
 
-    del.onclick = function() {
-      return confirm('削除しますか？');
-    }
-
     document.getElementById('modal-edit-btn').href = 'student_edit.php?id=' + btn.dataset.id;
 
   });
