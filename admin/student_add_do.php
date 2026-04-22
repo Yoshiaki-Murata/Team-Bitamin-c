@@ -43,7 +43,7 @@ if (!preg_match('/^[一-龠ぁ-んァ-ヶー]+[ 　]?[一-龠ぁ-んァ-ヶー]+
 }
 
 // ログインID 数字とアルファベット
-if (!preg_match('/^[0-9A-I]{10}$/', $login_id)) {
+if (!preg_match('/^[0-9a-i]{10}$/', $login_id)) {
     //header('location:student_add.php');
     exit('ID登録不可');
 }
