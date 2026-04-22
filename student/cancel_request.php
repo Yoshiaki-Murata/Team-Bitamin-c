@@ -6,7 +6,7 @@ require_once __DIR__ . "/../inc/function.php";
 <?php
 $db = db_connect();
 // クリックされた予約情報を取得
- $reserve_id = $_POST['reserve-id'];
+$reserve_id = $_POST['reserve-id'];
 // $reserve_id = 4;
 $sql = "SELECT 
 reservation_infos.id AS reserve_id,
@@ -39,8 +39,9 @@ $methods = $method_stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>キャンセル申請</title>
 </head>
+
 <body>
-    <form action="./cancel_request_do.php" method="post">
+    <form action="./cancel_request_do.php" method="post" id="cancelForm">
         <main class="container mt-5 l-wrapper">
             <h1 class="mb-5 text-center">キャンセル申請</h1>
             <div class="text-center">
@@ -100,7 +101,14 @@ $methods = $method_stmt->fetchAll(PDO::FETCH_ASSOC);
         });
         closeBtn.addEventListener('click', () => {
             modal.close();
-        })
+        });
+        // 最終的な送信時のチェック（念のため）
+        form.addEventListener('submit', (event) => {
+            if (textarea.value.trim() === "") {
+                alert("入力してください");
+                event.preventDefault();
+            }
+        });
     </script>
 </body>
 
