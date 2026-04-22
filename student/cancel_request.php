@@ -35,34 +35,78 @@ $methods = $method_stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="ja">
 
 <body>
-  <main class="container mt-5 l-wrapper">
-    <h1 class="mb-5 text-center">キャンセル申請</h1>
-    <div class="text-center">
+  <main class=" l-wrapper">
+    <h1 class="mb-5 c-title">キャンセル申請</h1>
+    <div>
       <table class="table mb-8">
+        <thead>
+          <tr>
+            <th>日付</th>
+            <th>時間</th>
+            <th>実施方法</th>
+          </tr>
+        </thead>
         <tbody>
-          <tr class="row">
-            <td class="col-3">予約内容</td>
-            <td class="col-3"><?php echo $reservation["date"] ?>
+          <tr>
+            <td><?php echo $reservation["date"] ?>
             </td>
-            <td class="col-3"><?php echo $reservation["time"] ?>
+            <td><?php echo $reservation["time"] ?>
             </td>
-            <td class="col-3"><?php echo $reservation["name"] ?></td>
+            <td><?php echo $reservation["name"] ?></td>
           </tr>
         </tbody>
       </table>
-      <!-- ↓apply_detailをNull設定はしていないので、何かしら記入してもらうよう文言変えました。 -->
-      <p>変更希望日時や予約枠を交換する場合は、交換相手のお名前をご記入ください。<br>
+
+      <p id="description">変更希望日時や予約枠を交換する場合は、交換相手のお名前をご記入ください。<br>
         また、補足の連絡事項がある場合はご記入ください。特にない場合は「なし」とご記入ください。</p>
+
       <form action="./cancel_request_do.php" method="post" id="cancelForm">
-        <textarea name="text" id="js-text" class="form-control mb-3"></textarea>
-        <button type="button" class="btn btn-primary" id="js-open">内容を確認</button>
-        <a href="./index.php" class="btn btn-secondary">TOPへ戻る</a>
+
+        <textarea name="text" id="js-text" class="form-control mb-3" rows="3" required></textarea>
+
+        <div class="mt-3">
+          <button type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#js-modal"
+            id="js-open">
+            内容を確認
+          </button>
+          <a href="./index.php" class="btn btn-secondary">
+            TOPへ戻る
+          </a>
+        </div>
       </form>
     </div>
+
+    <div class="modal fade" id="js-modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">入力内容の確認</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p class="fw-bold mb-2">キャンセル理由・変更内容</p>
+            <p id="js-text-write" class="border p-3 rounded bg-light"></p>
+          </div>
+          <div class="modal-footer">
+            <input type="hidden" name="reserve_id" value="<?= $reserve_id ?>">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              戻る
+            </button>
+            <button type="submit" form="cancelForm" class="btn btn-primary">
+              送信する
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- modal -->
-  <dialog id="js-modal" class="modal-dialog p-3 border rounded shadow">
+  <!-- <dialog id="js-modal" class="modal-dialog p-3 border rounded shadow">
     <div class="modal-content p-3">
 
       <h2 class="modal-header fs-5 border-bottom pb-2 mb-3">
@@ -84,34 +128,55 @@ $methods = $method_stmt->fetchAll(PDO::FETCH_ASSOC);
         <button class="btn btn-secondary" id="js-close" type="button">閉じる</button>
       </div>
     </div>
-  </dialog>
+  </dialog> -->
   </form>
 
   <script>
     // change_request
-    const openBtn = document.getElementById('js-open');
-    const closeBtn = document.getElementById('js-close');
-    const modal = document.getElementById('js-modal');
-    const textarea = document.getElementById('js-text');
-    const form = document.getElementById('cancelForm');
+    // const openBtn = document.getElementById('js-open');
+    // const closeBtn = document.getElementById('js-close');
+    // const modal = document.getElementById('js-modal');
+    // const textarea = document.getElementById('js-text');
+    // const form = document.getElementById('cancelForm');
 
-    openBtn.addEventListener('click', () => {
-      modal.showModal();
-      const element = document.getElementById('js-text');
-      const writeArea = document.getElementById('js-text-write');
-      writeArea.textContent = element.value;
-    });
-    closeBtn.addEventListener('click', () => {
-      modal.close();
-    });
+    // openBtn.addEventListener('click', () => {
+    //   modal.showModal();
+    //   const element = document.getElementById('js-text');
+    //   const writeArea = document.getElementById('js-text-write');
+    //   writeArea.textContent = element.value;
+    // });
+    // closeBtn.addEventListener('click', () => {
+    //   modal.close();
+    // });
     // 最終的な送信時のチェック（念のため）
-    form.addEventListener('submit', (event) => {
-      if (textarea.value.trim() === "") {
-        alert("入力してください");
-        event.preventDefault();
-      }
+    // form.addEventListener('submit', (event) => {
+    //   if (textarea.value.trim() === "") {
+    //     alert("入力してください");
+    //     event.preventDefault();
+    //   }
+    // });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const openBtn = document.getElementById('js-open');
+      const textarea = document.getElementById('js-text');
+      const writeArea = document.getElementById('js-text-write');
+      const modalEl = document.getElementById('js-modal');
+
+      const modal = new bootstrap.Modal(modalEl);
+
+      openBtn.addEventListener('click', () => {
+        const text = textarea.value.trim();
+
+        if (text === "") {
+          alert("入力してください");
+          return;
+        }
+
+        writeArea.textContent = text;
+        modal.show(); // ← ここで開く
+      });
     });
   </script>
 </body>
 
-</html>
+<?php require_once './../inc/footer.php'; ?>
