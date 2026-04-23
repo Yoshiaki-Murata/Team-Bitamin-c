@@ -441,7 +441,7 @@ require_once './../inc/header_admin.php';
 
       c.onchange = () => {
         const val = c.value;
-        s.innerHTML = '<option value="">選択</option>';
+        //s.innerHTML = '<option value=""></option>';
         opts.forEach(o => {
           if (!val || o.dataset.classId === val) s.appendChild(o);
         });
