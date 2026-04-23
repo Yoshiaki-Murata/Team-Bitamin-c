@@ -32,8 +32,10 @@ if (!empty($_POST)) {
       $stmt_select = $db->prepare($sql_select);
       $stmt_select->execute([':reserve_id' => $reserve_id]);
       $snapshot = $stmt_select->fetch(PDO::FETCH_ASSOC);
+      check_array($snapshot);
 
       //取得したコピー情報を apply_lists に挿入
+
       $sql_insert = "INSERT INTO apply_lists (
                 reserve_info_id, apply_detail, apply_status_id, apply_datetime,
                 res_date, res_time, res_line, res_student_name, 
@@ -46,6 +48,7 @@ if (!empty($_POST)) {
 
       $stmt = $db->prepare($sql_insert);
 
+
       date_default_timezone_set('Asia/Tokyo');
       $stmt->execute([
         ':reserve_id'           => $reserve_id,
@@ -55,8 +58,8 @@ if (!empty($_POST)) {
         ':res_time'             => $snapshot['res_time'],
         ':res_line'             => $snapshot['res_line'],
         ':res_student_name'     => $snapshot['res_student_name'],
-        ':res_class_name'       => $snapshot['res_class_name'],
-        ':res_consultant_name'  => $snapshot['res_consultant_name'],
+        ':res_class_name'       => $snapshot['res_class_name'] ?? "",
+        ':res_consultant_name'  => $snapshot['res_consultant_name'] ?? "",
         ':res_method_name'      => $snapshot['res_method_name'],
         ':carecon_id'           => $snapshot['carecon_id']
       ]);
