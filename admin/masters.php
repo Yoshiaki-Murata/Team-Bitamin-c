@@ -100,7 +100,8 @@ require_once './../inc/header_admin.php';
                     class="btn btn-danger btn-sm delete-btn"
                     data-bs-toggle="modal"
                     data-bs-target="#delMasterModal"
-                    data-id="<?php echo h($master['id']); ?>">
+                    data-id="<?php echo h($master['id']); ?>"
+                    data-name="<?php echo h($master['name']); ?>">
                     削除
                   </button>
                 </div>
@@ -156,6 +157,10 @@ require_once './../inc/header_admin.php';
 
           <form action="master_del_do.php" method="post">
             <div class="modal-body">
+              <dl class="row">
+                <dt class="col-sm-3">講師名</dt>
+                <dd class="col-sm-9" id="del-name"></dd>
+              </dl>
               <p>この管理者を削除しますか？</p>
 
               <!-- idを送る -->
@@ -195,7 +200,11 @@ require_once './../inc/header_admin.php';
     deleteButtons.forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-id');
+        const name = btn.getAttribute('data-name');
+
         document.getElementById('delete-id').value = id;
+        document.getElementById('del-name').textContent = name;
+
       });
     });
   });

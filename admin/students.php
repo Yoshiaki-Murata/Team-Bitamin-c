@@ -6,6 +6,8 @@ $db = db_connect();
 
 $students = [];
 $classes = [];
+$courses = [];
+$statuses = [];
 $err_msg = '';
 
 $class_id = $_GET['class_id'] ?? '';
@@ -24,6 +26,8 @@ try {
   student_status.name AS status_name,
   students.status_id,
   courses.name AS course_name,
+  courses.id AS course_id,
+students.class_id,
 
   CASE 
     WHEN students.status_id = 1 THEN 1
@@ -66,8 +70,18 @@ INNER JOIN courses ON students.course_id = courses.id';
   // クラス
   $stmt_classes = $db->query('SELECT id, name FROM classes ORDER BY id ASC');
   $classes = $stmt_classes->fetchAll(PDO::FETCH_ASSOC);
+
+  // 訓練コース
+  $stmt_course = $db->query('SELECT id,name FROM courses ORDER BY id ASC');
+  $courses = $stmt_course->fetchAll(PDO::FETCH_ASSOC);
+
+  // 在籍ステータス
+  $stmt_status = $db->query('SELECT id,name FROM student_status ORDER BY id ASC');
+  $statuses = $stmt_status->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-  $err_msg = $e->getMessage();
+  if ($err_msg) {
+    echo $err_msg;
+  }
 }
 
 
@@ -100,15 +114,15 @@ require_once './../inc/header_admin.php';
 
   <h1 class="c-title">訓練生一覧</h1>
 
-  <a href="student_add.php" class="btn btn-info mb-3">＋ 新規登録</a>
+  <button class="btn btn-info mb-3" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+    ＋ 新規登録
+  </button>
 
   <!-- 検索 -->
   <form method="GET" class="row g-2 mb-3">
-
     <div class="col-md-4">
       <input type="text" name="keyword" class="form-control" placeholder="名前検索" value="<?php echo h($keyword) ?>">
     </div>
-
     <div class="col-md-3">
       <select name="class_id" class="form-select">
         <option value="">全クラス</option>
@@ -119,12 +133,10 @@ require_once './../inc/header_admin.php';
         <?php endforeach; ?>
       </select>
     </div>
-
     <div class="col-md-2 d-flex gap-1">
       <button class="btn btn-primary w-100">検索</button>
       <a href="./students.php" class="btn btn-secondary w-100">リセット</a>
     </div>
-
   </form>
 
   <!-- テーブル -->
@@ -141,15 +153,12 @@ require_once './../inc/header_admin.php';
           <th>操作</th>
         </tr>
       </thead>
-
       <tbody>
-
         <?php if (empty($students)): ?>
           <tr>
             <td colspan="6" class="text-center text-muted">データがありません</td>
           </tr>
         <?php endif; ?>
-
         <?php foreach ($students as $s):
           $hasReserve = isset($reserve_by_student[$s['id']]);
         ?>
@@ -157,7 +166,6 @@ require_once './../inc/header_admin.php';
             <td><?php echo h($s['class_name'] . $s['number']) ?></td>
             <td><?php echo h($s['name']) ?></td>
             <td><?php echo h($s['course_name']) ?></td>
-
             <td>
               <?php if ($s['is_active']): ?>
                 <span class="badge bg-success"><?php echo h($s['status_name']) ?></span>
@@ -165,7 +173,6 @@ require_once './../inc/header_admin.php';
                 <span class="badge bg-danger"><?php echo h($s['status_name']) ?></span>
               <?php endif; ?>
             </td>
-
             <td>
               <?php if ($hasReserve): ?>
                 <span class="badge bg-info">あり</span>
@@ -173,38 +180,140 @@ require_once './../inc/header_admin.php';
                 <span class="badge bg-light text-dark">なし</span>
               <?php endif; ?>
             </td>
-
             <td>
               <button class="btn btn-sm btn-warning"
                 data-bs-toggle="modal"
                 data-bs-target="#studentModal"
                 data-id="<?php echo $s['id'] ?>"
                 data-name="<?php echo h($s['name']) ?>"
-                data-number="<?php echo h($s['class_name'] . $s['number']) ?>"
-                data-course="<?php echo h($s['course_name']) ?>"
-                data-admission="<?php echo $s['admission_date'] ?>"
+                data-number="<?php echo h($s['number']) ?>"
+                data-display-number="<?php echo h($s['class_name'] . $s['number']) ?>"
+                data-course-id="<?php echo $s['course_id'] ?>"
+                data-course-name="<?php echo h($s['course_name']) ?>"
+                data-status-id="<?php echo $s['status_id'] ?>"
+                data-status-name="<?php echo h($s['status_name']) ?>" data-admission="<?php echo $s['admission_date'] ?>"
                 data-graduation="<?php echo $s['graduation_date'] ?>"
                 data-pass="<?php echo h($s['password']) ?>"
-                data-status="<?php echo h($s['status_name']) ?>"
                 data-login="<?php echo h($s['login_id']) ?>">
                 詳細
               </button>
             </td>
             <td>
-              <button type="button" id="modal-edit-btn" class="btn btn-primary btn-sm">
+              <button type="button"
+                class="btn btn-primary btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#editStudentModal"
+                data-id="<?php echo $s['id'] ?>"
+                data-name="<?php echo h($s['name']) ?>"
+                data-number="<?php echo h($s['number']) ?>"
+                data-display-number="<?php echo h($s['class_name'] . $s['number']) ?>"
+                data-course-id="<?php echo $s['course_id'] ?>"
+                data-course-name="<?php echo h($s['course_name']) ?>"
+                data-status-id="<?php echo $s['status_id'] ?>"
+                data-status-name="<?php echo h($s['status_name']) ?>" data-admission="<?php echo $s['admission_date'] ?>"
+                data-graduation="<?php echo $s['graduation_date'] ?>"
+                data-pass="<?php echo h($s['password']) ?>"
+                data-login="<?php echo h($s['login_id']) ?>"
+                data-class="<?php echo $s['class_id'] ?>" data-status="<?php echo $s['status_id'] ?>">
                 編集
               </button>
-              <button type="button" id="modal-delete-btn" class="btn btn-danger btn-sm">
+              <button type="button"
+                class="btn btn-danger btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#delStudentModal"
+                data-id="<?php echo $s['id'] ?>"
+                data-name="<?php echo h($s['name']) ?>"
+                data-number="<?php echo h($s['class_name'] . $s['number']) ?>"
+                data-course-id="<?php echo $s['course_id'] ?>"
+                data-course_name="<?php echo h($s['course_name']) ?>">
                 削除
               </button>
             </td>
           </tr>
         <?php endforeach; ?>
-
       </tbody>
     </table>
   </div>
 
+  <!-- 新規作成モーダル -->
+  <div class="modal fade" id="addStudentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">訓練生新規登録</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form action="./student_add_do.php" method="post">
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="fw-bold">教室</label>
+              <select name="class_id" id="class_id" class="form-control form-control-sm mb-3" aria-label="Small select example" required>
+                <option value="" class="text-secondary">教室</option>
+                <?php foreach ($classes as  $class): ?>
+                  <option value="<?php echo h($class["id"]); ?>">
+                    <?php echo h($class["name"]); ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">番号</label>
+              <input type="text" name="number" class="form-control mb-3" placeholder="半角数字2桁 例：01" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">名前</label>
+              <input type="text" name="name" class="form-control mb-3" maxlength="255" placeholder="リカレント太郎" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">訓練種別</label>
+              <select name="course_id" id="course_id" class="form-control form-control-sm mb-3" aria-label="Small select example" required>
+                <option value="" class="text-secondary">種別を選択</option>
+                <?php foreach ($courses as  $course): ?>
+                  <option value="<?php echo h($course["id"]); ?>">
+                    <?php echo h($course["name"]); ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">入校日</label>
+              <input type="date" name="admission_date" class="form-control mb-3" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">終了予定日</label>
+              <input type="date" name="graduation_date" class="form-control mb-3" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">ログインID</label>
+              <p>入校年(例：2026)＋入校月(例：5月→05)＋教室名(例：6a)＋出席番号(例：01)</p>
+              <input type="text" name="login_id" class="form-control mb-3" maxlength="255" placeholder="2026056a01" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">パスワード</label>
+              <input type="text" name="password" class="form-control mb-3" maxlength="8" placeholder="数字8桁" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">在籍状況</label>
+              <select name="status_id" id="status_id" class="form-control form-control-sm mb-3" aria-label="Small select example" required>
+                <option value="">在籍状況</option>
+                <?php foreach ($statuses as  $status): ?>
+                  <option value="<?php echo h($status["id"]); ?>"
+                    <?php if ($status["id"] == 1) echo 'selected'; ?>>
+                    <?php echo h($status["name"]); ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="submit" value="登録" class="btn btn-primary">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- ここまで -->
 
   <!-- 詳細モーダル -->
   <div class="modal fade" id="studentModal">
@@ -234,21 +343,135 @@ require_once './../inc/header_admin.php';
       </div>
     </div>
   </div>
+  <!-- ここまで -->
+
+  <!-- 編集モーダル -->
+  <div class="modal fade" id="editStudentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">訓練生編集</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form action="./student_edit_do.php" method="post">
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="fw-bold">教室</label>
+              <select name="class_id" id="class_id" class="form-control form-control-sm mb-3" aria-label="Small select example" required>
+                <option value="" class="text-secondary">教室</option>
+                <?php foreach ($classes as  $class): ?>
+                  <option value="<?php echo h($class["id"]); ?>">
+                    <?php echo h($class["name"]); ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">番号</label>
+              <input type="text" name="number" class="form-control mb-3" placeholder="半角数字2桁 例：01" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">名前</label>
+              <input type="text" name="name" class="form-control mb-3" maxlength="255" placeholder="リカレント太郎" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">訓練種別</label>
+              <select name="course_id" id="course_id" class="form-control form-control-sm mb-3" aria-label="Small select example" required>
+                <option value="" class="text-secondary">種別を選択</option>
+                <?php foreach ($courses as  $course): ?>
+                  <option value="<?php echo h($course["id"]); ?>">
+                    <?php echo h($course["name"]); ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">入校日</label>
+              <input type="date" name="admission_date" class="form-control mb-3" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">終了予定日</label>
+              <input type="date" name="graduation_date" class="form-control mb-3" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">ログインID</label>
+              <p>入校年(例：2026)＋入校月(例：5月→05)＋教室名(例：6a)＋出席番号(例：01)</p>
+              <input type="text" name="login_id" class="form-control mb-3" maxlength="255" placeholder="2026056a01" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">パスワード</label>
+              <input type="text" name="password" class="form-control mb-3" maxlength="8" placeholder="数字8桁" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">在籍状況</label>
+              <select name="status_id" id="status_id" class="form-control form-control-sm mb-3" aria-label="Small select example" required>
+                <?php foreach ($statuses as  $status): ?>
+                  <option value="<?php echo h($status["id"]); ?>"
+                    <?php if ($status["id"] == 1) echo 'selected'; ?>>
+                    <?php echo h($status["name"]); ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="hidden" name="id">
+            <input type="submit" value="更新" class="btn btn-primary">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- ここまで -->
+
+  <!-- 削除モーダル -->
+  <div class="modal fade" id="delStudentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">削除確認</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form action="./student_del_do.php" method="post">
+          <div class="modal-body">
+            <dl class="row">
+              <dt class="col-sm-3">番号</dt>
+              <dd class="col-sm-9" id="del-number"></dd>
+              <dt class="col-sm-3">訓練生名</dt>
+              <dd class="col-sm-9" id="del-name"></dd>
+              <dt class="col-sm-3">訓練コース</dt>
+              <dd class="col-sm-9" id="del-course"></dd>
+            </dl>
+
+            <p>この訓練生を削除しますか?</p>
+          </div>
+          <div class="modal-footer">
+            <input type="hidden" name="id" id="del-id">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">戻る</button>
+            <button type="submit" class="btn btn-danger">削除</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- ここまで -->
 
 </div>
 
 
 <script>
   const reserveData = <?php echo json_encode($reserve_by_student) ?>;
-  // モーダル
-  const modal = document.getElementById('studentModal');
 
-  modal.addEventListener('show.bs.modal', function(e) {
+  // ===== 詳細モーダル =====
+  const studentModal = document.getElementById('studentModal');
+
+  studentModal.addEventListener('show.bs.modal', function(e) {
     const btn = e.relatedTarget;
 
-    document.getElementById('modal-number').textContent = btn.dataset.number;
+    document.getElementById('modal-number').textContent = btn.dataset.displayNumber;
     document.getElementById('modal-name').textContent = btn.dataset.name;
-    document.getElementById('modal-course').textContent = btn.dataset.course;
+    document.getElementById('modal-course').textContent = btn.dataset.courseName;
     document.getElementById('modal-admission').textContent = btn.dataset.admission;
     document.getElementById('modal-graduation').textContent = btn.dataset.graduation;
     document.getElementById('modal-login').textContent = btn.dataset.login;
@@ -261,19 +484,62 @@ require_once './../inc/header_admin.php';
     if (list) {
       list.forEach(r => {
         html += `
-      <div class="card p-2 mb-2">
-        <div>${r.date} ${r.time}</div>
-        <div>${r.name}</div>
-        <div>${r.method_name}</div>
-      </div>`;
+        <div class="card p-2 mb-2">
+          <div>${r.date} ${r.time}</div>
+          <div>${r.name}</div>
+          <div>${r.method_name}</div>
+        </div>`;
       });
     } else {
       html = '予約なし';
     }
 
     document.getElementById('modal-reserve').innerHTML = html;
+  });
 
 
+  // ===== 編集モーダル =====
+  const editModal = document.getElementById('editStudentModal');
+
+  editModal.addEventListener('show.bs.modal', function(e) {
+    const btn = e.relatedTarget;
+    const form = editModal.querySelector('form');
+
+    // 各フィールドセット
+    form.querySelector('[name="class_id"]').value = btn.dataset.class;
+    form.querySelector('[name="number"]').value = btn.dataset.number;
+    form.querySelector('[name="name"]').value = btn.dataset.name;
+    form.querySelector('[name="course_id"]').value = btn.dataset.courseId;
+    form.querySelector('[name="status_id"]').value = btn.dataset.statusId;
+    form.querySelector('[name="admission_date"]').value = btn.dataset.admission;
+    form.querySelector('[name="graduation_date"]').value = btn.dataset.graduation;
+    form.querySelector('[name="login_id"]').value = btn.dataset.login;
+    form.querySelector('[name="password"]').value = btn.dataset.pass;
+
+    // hidden id
+    let hidden = form.querySelector('[name="id"]');
+    if (!hidden) {
+      hidden = document.createElement('input');
+      hidden.type = 'hidden';
+      hidden.name = 'id';
+      form.appendChild(hidden);
+    }
+    hidden.value = btn.dataset.id;
+  });
+
+  // ===== 削除モーダル =====
+  const delModal = document.getElementById('delStudentModal');
+
+  delModal.addEventListener('show.bs.modal', function(e) {
+    const btn = e.relatedTarget;
+
+    // 表示
+    document.getElementById('del-number').textContent = btn.dataset.number;
+    document.getElementById('del-name').textContent = btn.dataset.name;
+    document.getElementById('del-course').textContent = btn.dataset.course_name;
+
+    // hidden id
+    document.getElementById('del-id').value = btn.dataset.id;
   });
 </script>
 

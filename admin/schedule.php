@@ -219,34 +219,30 @@ require_once './../inc/header_admin.php';
 
     <!-- フィルター -->
     <form method="get" class="row g-2 mb-3">
-
       <div class="col-md-3">
         <select name="date" class="form-select" id="date-box">
           <option value="">全日程</option>
           <?php foreach ($dates as $d): ?>
-            <option value="<?= h($d['date']) ?>" <?= $d['date'] == $date ? 'selected' : '' ?>>
-              <?= h($d['date']) ?>
+            <option value="<?php echo h($d['date']) ?>" <?php echo $d['date'] == $date ? 'selected' : '' ?>>
+              <?php echo h($d['date']) ?>
             </option>
           <?php endforeach; ?>
         </select>
       </div>
-
       <div class="col-md-3">
         <select name="line" class="form-select" id="line-box">
           <option value="">全ライン</option>
           <?php foreach ($lines as $l): ?>
-            <option value="<?= $l['id'] ?>" <?= $l['id'] == $line_id ? 'selected' : '' ?>>
-              <?= h($l['line']) ?>
+            <option value="<?php echo $l['id'] ?>" <?php echo $l['id'] == $line_id ? 'selected' : '' ?>>
+              <?php echo h($l['line']) ?>
             </option>
           <?php endforeach; ?>
         </select>
       </div>
-
       <div class="col-md-2 d-flex gap-1">
         <button class="btn btn-primary w-100">検索</button>
         <a href="schedule.php" class="btn btn-secondary w-100">リセット</a>
       </div>
-
     </form>
     <!-- ここまで -->
 
@@ -264,9 +260,7 @@ require_once './../inc/header_admin.php';
             <th>操作</th>
           </tr>
         </thead>
-
         <tbody>
-
           <?php if (empty($slots)): ?>
             <tr>
               <td colspan="8" class="text-center text-muted py-4">
@@ -274,7 +268,6 @@ require_once './../inc/header_admin.php';
               </td>
             </tr>
           <?php endif; ?>
-
           <?php foreach ($slots as $slot): ?>
             <tr style="cursor:pointer;">
               <td><?php echo h($slot['date']); ?></td>
@@ -283,7 +276,6 @@ require_once './../inc/header_admin.php';
               <td><?php echo h($slot['class_name'] ?? '未定'); ?></td>
               <td><?php echo h($slot['consultant_name'] ?? '未定'); ?></td>
               <td><?php echo h($slot['carecon_name']); ?></td>
-
               <!-- <td>
                 <?php if ($slot['reserve_status_id'] == 1): ?>
                   <span class="badge bg-success">空き</span>
@@ -295,28 +287,31 @@ require_once './../inc/header_admin.php';
                   </span>
                 <?php endif; ?>
               </td> -->
-
               <td>
                 <button type="button"
                   class="btn btn-sm btn-primary edit-btn"
                   data-bs-toggle="modal"
                   data-bs-target="#editSlotModal"
-                  data-id="<?= h($slot['id']); ?>"
-                  data-date="<?= h($slot['date']); ?>"
-                  data-time-id="<?= h($slot['time_id']); ?>"
-                  data-line-id="<?= h($slot['lines_id']); ?>"
-                  data-class-id="<?= h($slot['class_id']); ?>"
-                  data-consul-id="<?= h($slot['consultant_id']); ?>"
-                  data-carecon-id="<?= h($slot['carecon_id']); ?>"
-                  data-status-id="<?= h($slot['reserve_status_id']); ?>">
+                  data-id="<?php echo h($slot['id']); ?>"
+                  data-date="<?php echo h($slot['date']); ?>"
+                  data-time-id="<?php echo h($slot['time_id']); ?>"
+                  data-line-id="<?php echo h($slot['lines_id']); ?>"
+                  data-class-id="<?php echo h($slot['class_id']); ?>"
+                  data-consul-id="<?php echo h($slot['consultant_id']); ?>"
+                  data-carecon-id="<?php echo h($slot['carecon_id']); ?>"
+                  data-status-id="<?php echo h($slot['reserve_status_id']); ?>">
                   編集
                 </button>
-
                 <button type="button"
                   class="btn btn-sm btn-danger del-btn"
                   data-bs-toggle="modal"
                   data-bs-target="#delSlotModal"
-                  data-id="<?= h($slot['id']); ?>">
+                  data-id="<?php echo h($slot['id']); ?>"
+                  data-date="<?php echo h($slot['date']); ?>"
+                  data-time-id="<?php echo h($slot['time_id']); ?>"
+                  data-time-slot="<?php echo h($slot['time_slot']) ?>"
+                  data-line-id="<?php echo h($slot['lines_id']); ?>"
+                  data-line-number="<?php echo h($slot['line_number']) ?>">
                   削除
                 </button>
               </td>
@@ -419,6 +414,14 @@ require_once './../inc/header_admin.php';
           </div>
           <form action="./schedule_del_do.php" method="post">
             <div class="modal-body">
+              <dl class="row">
+                <dt class="col-sm-3">ライン</dt>
+                <dd class="col-sm-9" id="del-line"></dd>
+                <dt class="col-sm-3">日付</dt>
+                <dd class="col-sm-9" id="del-date"></dd>
+                <dt class="col-sm-3">時間</dt>
+                <dd class="col-sm-9" id="del-time"></dd>
+              </dl>
               <p>このキャリコン枠を削除しますか？</p>
               <input type="hidden" name="id" id="delete-id">
             </div>
@@ -470,6 +473,14 @@ require_once './../inc/header_admin.php';
     document.querySelectorAll('.del-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.getElementById('delete-id').value = btn.dataset.id;
+
+        const line = btn.getAttribute('data-line-number');
+        const date = btn.getAttribute('data-date');
+        const time = btn.getAttribute('data-time-slot');
+
+        document.getElementById('del-line').textContent = line;
+        document.getElementById('del-date').textContent = date;
+        document.getElementById('del-time').textContent = time;
       });
     });
   });
