@@ -9,6 +9,14 @@ if (!empty($_POST)) {
         $login_id = $_POST['login_id'];
         $password = $_POST['password'];
 
+        // ログインID 数字とアルファベット 4字以上10字以下
+        if (!preg_match('/^[0-9a-z]{4,10}$/', $login_id)) {
+            header('masters.php');
+            exit('ID登録不可');
+        }
+
+
+
         // DBに接続
         try {
             $db = db_connect();
