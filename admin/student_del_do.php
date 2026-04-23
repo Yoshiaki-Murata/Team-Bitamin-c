@@ -3,28 +3,67 @@ require_once __DIR__ . '/../inc/function.php';
 
 $db = db_connect();
 
-// POSTチェック
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: students.php');
     exit;
 }
 
-// id取得
 $id = $_POST['id'] ?? '';
 
-// 不正チェック
 if ($id === '' || !is_numeric($id)) {
     exit('不正なアクセスです');
 }
 
 try {
-    // 削除処理
+
+    //  影響するslotを先に取得
+    $sql = '
+        SELECT DISTINCT slot_id 
+        FROM reservation_infos 
+        WHERE student_id = :student_id
+    ';
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':student_id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $slots = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    //  reservation_infos も削除（←これ重要）
+    $sql = 'DELETE FROM reservation_infos WHERE student_id = :student_id';
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':student_id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    //  学生削除
     $sql = "DELETE FROM students WHERE id = :id";
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
 
-    // 一覧へ戻る
+    //  slotごとにstatus再計算
+    foreach ($slots as $slot_id) {
+
+        $sql = '
+            SELECT COUNT(*) 
+            FROM reservation_infos 
+            WHERE slot_id = :slot_id
+        ';
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':slot_id', $slot_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $status = ($stmt->fetchColumn() > 0) ? 2 : 1;
+
+        $sql = '
+            UPDATE reservation_slots
+            SET reserve_status_id = :status
+            WHERE id = :slot_id
+        ';
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':status', $status, PDO::PARAM_INT);
+        $stmt->bindValue(':slot_id', $slot_id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
     header('Location: students.php');
     exit;
 } catch (PDOException $e) {
