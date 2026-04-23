@@ -83,7 +83,8 @@ JOIN students ON reservation_infos.student_id=students.id
 JOIN reservation_slots ON reservation_infos.slot_id=reservation_slots.id 
 JOIN methods ON reservation_infos.method_id=methods.id 
 JOIN times ON reservation_slots.time_id=times.id 
-JOIN carecons ON reservation_slots.carecon_id=carecons.id";
+JOIN carecons ON reservation_slots.carecon_id=carecons.id
+ORDER BY reservation_slots.date ASC";
 
 $reserves = $db->query($reserve_sql)->fetchAll(PDO::FETCH_ASSOC);
 
@@ -127,16 +128,17 @@ require_once './../inc/header_admin.php';
   </form>
 
   <!-- テーブル -->
-  <div class="table-responsive" style="max-height:500px;">
-    <table class="table table-hover">
-      <thead class="table-light" style="position:sticky;top:0;">
+  <div class="table-responsive">
+    <table class="table table-hover ">
+      <thead class="table-light">
         <tr>
           <th>番号</th>
           <th>名前</th>
           <th>コース</th>
           <th>状態</th>
           <th>予約</th>
-          <th></th>
+          <th>詳細</th>
+          <th>操作</th>
         </tr>
       </thead>
 
@@ -188,7 +190,14 @@ require_once './../inc/header_admin.php';
                 詳細
               </button>
             </td>
-
+            <td>
+              <button type="button" id="modal-edit-btn" class="btn btn-primary btn-sm">
+                編集
+              </button>
+              <button type="button" id="modal-delete-btn" class="btn btn-danger btn-sm">
+                削除
+              </button>
+            </td>
           </tr>
         <?php endforeach; ?>
 
@@ -197,18 +206,15 @@ require_once './../inc/header_admin.php';
   </div>
 
 
-  <!-- モーダル -->
+  <!-- 詳細モーダル -->
   <div class="modal fade" id="studentModal">
     <div class="modal-dialog">
       <div class="modal-content">
-
         <div class="modal-header">
           <h5 class="modal-title">訓練生詳細</h5>
           <button class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-
         <div class="modal-body">
-
           <h6 class="text-muted">基本情報</h6>
           <p>番号：<span id="modal-number"></span></p>
           <p>名前：<span id="modal-name"></span></p>
@@ -224,12 +230,6 @@ require_once './../inc/header_admin.php';
 
           <h6 class="text-muted mt-3">予約</h6>
           <div id="modal-reserve"></div>
-
-          <div class="d-flex gap-2 mt-4">
-            <a id="modal-edit-btn" class="btn btn-primary">編集</a>
-            <a id="modal-delete-btn" class="btn btn-danger">削除</a>
-          </div>
-
         </div>
       </div>
     </div>
@@ -240,14 +240,6 @@ require_once './../inc/header_admin.php';
 
 <script>
   const reserveData = <?php echo json_encode($reserve_by_student) ?>;
-
-  // 行クリック
-  document.querySelectorAll("tbody tr").forEach(tr => {
-    tr.addEventListener("click", () => {
-      tr.querySelector("button").click();
-    });
-  });
-
   // モーダル
   const modal = document.getElementById('studentModal');
 
@@ -281,11 +273,6 @@ require_once './../inc/header_admin.php';
 
     document.getElementById('modal-reserve').innerHTML = html;
 
-    // ボタン
-    const del = document.getElementById('modal-delete-btn');
-    del.href = 'student_del.php?id=' + btn.dataset.id;
-
-    document.getElementById('modal-edit-btn').href = 'student_edit.php?id=' + btn.dataset.id;
 
   });
 </script>
