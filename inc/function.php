@@ -55,8 +55,11 @@ function check_logined()
     }
 }
 
-
-function session_msg($msg){
-    $_SESSION["msg"]=$msg;
+// 成功したときのメッセージ
+function session_success_msg($success_msg){
+    $_SESSION["success_msg"]=$success_msg;
 }
-
+// 失敗したときのメッセージ
+function session_err_msg($err_msg){
+    $_SESSION["err_msg"]=$err_msg;
+}
