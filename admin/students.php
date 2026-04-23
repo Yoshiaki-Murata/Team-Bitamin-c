@@ -6,6 +6,8 @@ $db = db_connect();
 
 $students = [];
 $classes = [];
+$courses = [];
+$statuses = [];
 $err_msg = '';
 
 $class_id = $_GET['class_id'] ?? '';
@@ -66,8 +68,18 @@ INNER JOIN courses ON students.course_id = courses.id';
   // クラス
   $stmt_classes = $db->query('SELECT id, name FROM classes ORDER BY id ASC');
   $classes = $stmt_classes->fetchAll(PDO::FETCH_ASSOC);
+
+  // 訓練コース
+  $stmt_course = $db->query('SELECT id,name FROM courses ORDER BY id ASC');
+  $courses = $stmt_course->fetchAll(PDO::FETCH_ASSOC);
+
+  // 在籍ステータス
+  $stmt_status = $db->query('SELECT id,name FROM student_status ORDER BY id ASC');
+  $statuses = $stmt_status->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-  $err_msg = $e->getMessage();
+  if ($err_msg) {
+    echo $err_msg;
+  }
 }
 
 
@@ -100,15 +112,15 @@ require_once './../inc/header_admin.php';
 
   <h1 class="c-title">訓練生一覧</h1>
 
-  <a href="student_add.php" class="btn btn-info mb-3">＋ 新規登録</a>
+  <button class="btn btn-info mb-3" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+    ＋ 新規登録
+  </button>
 
   <!-- 検索 -->
   <form method="GET" class="row g-2 mb-3">
-
     <div class="col-md-4">
       <input type="text" name="keyword" class="form-control" placeholder="名前検索" value="<?php echo h($keyword) ?>">
     </div>
-
     <div class="col-md-3">
       <select name="class_id" class="form-select">
         <option value="">全クラス</option>
@@ -119,12 +131,10 @@ require_once './../inc/header_admin.php';
         <?php endforeach; ?>
       </select>
     </div>
-
     <div class="col-md-2 d-flex gap-1">
       <button class="btn btn-primary w-100">検索</button>
       <a href="./students.php" class="btn btn-secondary w-100">リセット</a>
     </div>
-
   </form>
 
   <!-- テーブル -->
@@ -141,15 +151,12 @@ require_once './../inc/header_admin.php';
           <th>操作</th>
         </tr>
       </thead>
-
       <tbody>
-
         <?php if (empty($students)): ?>
           <tr>
             <td colspan="6" class="text-center text-muted">データがありません</td>
           </tr>
         <?php endif; ?>
-
         <?php foreach ($students as $s):
           $hasReserve = isset($reserve_by_student[$s['id']]);
         ?>
@@ -157,7 +164,6 @@ require_once './../inc/header_admin.php';
             <td><?php echo h($s['class_name'] . $s['number']) ?></td>
             <td><?php echo h($s['name']) ?></td>
             <td><?php echo h($s['course_name']) ?></td>
-
             <td>
               <?php if ($s['is_active']): ?>
                 <span class="badge bg-success"><?php echo h($s['status_name']) ?></span>
@@ -165,7 +171,6 @@ require_once './../inc/header_admin.php';
                 <span class="badge bg-danger"><?php echo h($s['status_name']) ?></span>
               <?php endif; ?>
             </td>
-
             <td>
               <?php if ($hasReserve): ?>
                 <span class="badge bg-info">あり</span>
@@ -173,7 +178,6 @@ require_once './../inc/header_admin.php';
                 <span class="badge bg-light text-dark">なし</span>
               <?php endif; ?>
             </td>
-
             <td>
               <button class="btn btn-sm btn-warning"
                 data-bs-toggle="modal"
@@ -200,11 +204,89 @@ require_once './../inc/header_admin.php';
             </td>
           </tr>
         <?php endforeach; ?>
-
       </tbody>
     </table>
   </div>
 
+  <!-- 新規作成モーダル -->
+  <div class="modal fade" id="addStudentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">訓練生新規登録</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form action="./student_add_do.php" method="post">
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="fw-bold">教室</label>
+              <select name="class_id" id="class_id" class="form-control form-control-sm mb-3" aria-label="Small select example" required>
+                <option value="" class="text-secondary">教室</option>
+                <?php foreach ($classes as  $class): ?>
+                  <option value="<?php echo h($class["id"]); ?>">
+                    <?php echo h($class["name"]); ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">番号</label>
+              <input type="text" name="number" class="form-control mb-3" placeholder="半角数字2桁 例：01" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">名前</label>
+              <input type="text" name="name" class="form-control mb-3" maxlength="255" placeholder="リカレント太郎" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">訓練種別</label>
+              <select name="course_id" id="course_id" class="form-control form-control-sm mb-3" aria-label="Small select example" required>
+                <option value="" class="text-secondary">種別を選択</option>
+                <?php foreach ($courses as  $course): ?>
+                  <option value="<?php echo h($course["id"]); ?>">
+                    <?php echo h($course["name"]); ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">入校日</label>
+              <input type="date" name="admission_date" class="form-control mb-3" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">終了予定日</label>
+              <input type="date" name="graduation_date" class="form-control mb-3" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">ログインID</label>
+              <p>入校年(例：2026)＋入校月(例：5月→05)＋教室名(例：6a)＋出席番号(例：01)</p>
+              <input type="text" name="login_id" class="form-control mb-3" maxlength="255" placeholder="2026056a01" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">パスワード</label>
+              <input type="text" name="password" class="form-control mb-3" maxlength="8" placeholder="数字8桁" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">在籍状況</label>
+              <select name="status_id" id="status_id" class="form-control form-control-sm mb-3" aria-label="Small select example" required>
+                <option value="">在籍状況</option>
+                <?php foreach ($statuses as  $status): ?>
+                  <option value="<?php echo h($status["id"]); ?>"
+                    <?php if ($status["id"] == 1) echo 'selected'; ?>>
+                    <?php echo h($status["name"]); ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="submit" value="更新" class="btn btn-primary">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- ここまで -->
 
   <!-- 詳細モーダル -->
   <div class="modal fade" id="studentModal">
@@ -234,6 +316,89 @@ require_once './../inc/header_admin.php';
       </div>
     </div>
   </div>
+  <!-- ここまで -->
+
+  <!-- 編集モーダル -->
+  <div class="modal fade" id="editStudentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">訓練生新規登録</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form action="./student_edit_do.php" method="post">
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="fw-bold">教室</label>
+              <select name="class_id" id="class_id" class="form-control form-control-sm mb-3" aria-label="Small select example" required>
+                <option value="" class="text-secondary">教室</option>
+                <?php foreach ($classes as  $class): ?>
+                  <option value="<?php echo h($class["id"]); ?>">
+                    <?php echo h($class["name"]); ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">番号</label>
+              <input type="text" name="number" class="form-control mb-3" placeholder="半角数字2桁 例：01" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">名前</label>
+              <input type="text" name="name" class="form-control mb-3" maxlength="255" placeholder="リカレント太郎" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">訓練種別</label>
+              <select name="course_id" id="course_id" class="form-control form-control-sm mb-3" aria-label="Small select example" required>
+                <option value="" class="text-secondary">種別を選択</option>
+                <?php foreach ($courses as  $course): ?>
+                  <option value="<?php echo h($course["id"]); ?>">
+                    <?php echo h($course["name"]); ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">入校日</label>
+              <input type="date" name="admission_date" class="form-control mb-3" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">終了予定日</label>
+              <input type="date" name="graduation_date" class="form-control mb-3" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">ログインID</label>
+              <p>入校年(例：2026)＋入校月(例：5月→05)＋教室名(例：6a)＋出席番号(例：01)</p>
+              <input type="text" name="login_id" class="form-control mb-3" maxlength="255" placeholder="2026056a01" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">パスワード</label>
+              <input type="text" name="password" class="form-control mb-3" maxlength="8" placeholder="数字8桁" required>
+            </div>
+            <div class="form-group">
+              <label class="fw-bold">在籍状況</label>
+              <select name="status_id" id="status_id" class="form-control form-control-sm mb-3" aria-label="Small select example" required>
+                <?php foreach ($statuses as  $status): ?>
+                  <option value="<?php echo h($status["id"]); ?>"
+                    <?php if ($status["id"] == 1) echo 'selected'; ?>>
+                    <?php echo h($status["name"]); ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="submit" value="更新" class="btn btn-primary">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- ここまで -->
+
+  <!-- 削除モーダル -->
+  <!-- ここまで -->
 
 </div>
 
