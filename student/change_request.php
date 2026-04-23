@@ -31,19 +31,11 @@ $methods = $method_stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 
-<!-- <!DOCTYPE html>
-<html lang="ja">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>変更申請</title>
-</head> -->
-
 <body>
 
     <main class="container mt-5 l-wrapper">
         <h1 class="mb-5 text-center">変更申請</h1>
+
 
         <table class="table mb-8">
             <thead>
@@ -65,6 +57,7 @@ $methods = $method_stmt->fetchAll(PDO::FETCH_ASSOC);
         </table>
         <p id="description">希望日時、枠を交換する場合は相手の名前をご記入ください。また、補足の連絡事項があればご記入ください。</p>
         <form action="./change_request_do.php" method="post" id="change-form">
+            <input type="hidden" name="reserve_id" value="<?php echo $reserve_id; ?>">
             <textarea name="text" id="js-text" class="form-control" rows="3" required></textarea>
             <div class="mt-3">
                 <button type="button" class="btn btn-primary" id="js-open">内容を確認</button>
@@ -90,7 +83,6 @@ $methods = $method_stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <div class="modal-footer mt-3 gap-2">
 
-                <input type="hidden" name="reserve_id" value="<?php echo $reserve_id; ?>">
                 <div class="d-flex align-items-center">
                     <button class="btn btn-primary" type="submit" form="change-form">送信</button>
 
