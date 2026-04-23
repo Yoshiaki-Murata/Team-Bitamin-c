@@ -327,7 +327,7 @@ require_once './../inc/header_admin.php';
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">キャリコン枠編集</h5>
+            <h5 class="modal-title">予約枠編集</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <form action="./schedule_edit_do.php" method="post">
@@ -422,7 +422,7 @@ require_once './../inc/header_admin.php';
                 <dt class="col-sm-3">時間</dt>
                 <dd class="col-sm-9" id="del-time"></dd>
               </dl>
-              <p>このキャリコン枠を削除しますか？</p>
+              <p>この予約枠を削除しますか？</p>
               <input type="hidden" name="id" id="delete-id">
             </div>
             <div class="modal-footer">
