@@ -72,6 +72,17 @@ if (empty($status_id)) {
 }
 
 try {
+
+    $db->beginTransaction();
+
+    // ① 更新前status取得
+    $sql = 'SELECT status_id FROM students WHERE id = :id';
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $before_status = $stmt->fetchColumn();
+
+    // ② 学生更新
     $sql = "UPDATE students SET
         class_id = :class_id,
         number = :number,
@@ -99,8 +110,42 @@ try {
 
     $stmt->execute();
 
+    // ③ 在籍 → 退校になったときだけ
+    if ($before_status == 1 && $status_id != 1) {
+
+        $sql = 'SELECT slot_id FROM reservation_infos WHERE student_id = :student_id';
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':student_id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $slots = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        $sql = 'DELETE FROM reservation_infos WHERE student_id = :student_id';
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':student_id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        foreach ($slots as $slot_id) {
+
+            $sql = 'SELECT COUNT(*) FROM reservation_infos WHERE slot_id = :slot_id';
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(':slot_id', $slot_id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $status = ($stmt->fetchColumn() > 0) ? 2 : 1;
+
+            $sql = 'UPDATE reservation_slots SET reserve_status_id = :status WHERE id = :slot_id';
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(':status', $status, PDO::PARAM_INT);
+            $stmt->bindValue(':slot_id', $slot_id, PDO::PARAM_INT);
+            $stmt->execute();
+        }
+    }
+
+    $db->commit();
+
     header('Location: students.php');
     exit;
 } catch (PDOException $e) {
+    $db->rollBack();
     echo '更新失敗: ' . $e->getMessage();
 }
