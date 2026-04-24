@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($stmt->rowCount() === 0) {
             $_SESSION["err_msg"] = "削除できませんでした";
-            header('location:masters.php?id=' . $_POST["id"]);
+            header('location:request.php?id=' . $_POST["id"]);
             exit();
         } else {
             $_SESSION["msg"] = "削除完了しました";
