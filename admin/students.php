@@ -328,21 +328,21 @@ require_once './../inc/header_admin.php';
           <button class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <h6 class="text-muted">基本情報</h6>
+          <h6 class="text-muted">●基本情報</h6>
           <p>番号：<span id="modal-number"></span></p>
           <p>名前：<span id="modal-name"></span></p>
           <p>コース：<span id="modal-course"></span></p>
           <p>在籍状況：<span id="modal-status"></span></p>
 
-          <h6 class="text-muted mt-3">期間</h6>
+          <h6 class="text-muted">●期間</h6>
           <p>入校：<span id="modal-admission"></span></p>
           <p>修了：<span id="modal-graduation"></span></p>
 
-          <h6 class="text-muted mt-3">アカウント</h6>
+          <h6 class="text-muted">●アカウント</h6>
           <p>ID：<span id="modal-login"></span></p>
           <p>PASS：<span id="modal-pass"></span></p>
 
-          <h6 class="text-muted mt-3">予約</h6>
+          <h6 class="text-muted">●予約</h6>
           <div id="modal-reserve"></div>
         </div>
       </div>
