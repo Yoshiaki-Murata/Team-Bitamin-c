@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // emptyより確実な判定
         ':carecon_id'           => $snapshot['carecon_id']
       ]);
 
-      header('Location: index.php');
+      header('Location: complete.php');
       exit();
     } catch (PDOException $e) {
       exit('エラー: ' . $e->getMessage());
