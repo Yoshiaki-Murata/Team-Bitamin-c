@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../inc/function.php';
+check_logined();
 
 // TODO: データ受け取り
 if (!empty($_POST)) {
@@ -13,8 +14,16 @@ if (!empty($_POST)) {
         $sql = 'DELETE FROM admins WHERE id=:id';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':id', $id);
-
         $stmt->execute();
+
+
+        if ($stmt->rowCount() === 0) {
+            $_SESSION["err_msg"] = "削除できませんでした";
+            header('location:masters.php');
+            exit();
+        } else {
+            $_SESSION["msg"] = "削除完了しました";
+        }
 
         // トップページへ画面遷移
         header('location:masters.php');

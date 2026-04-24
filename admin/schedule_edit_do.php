@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../inc/function.php';
+check_logined();
 
 $db = db_connect();
 
@@ -51,8 +52,7 @@ try {
             lines_id = :lines_id,
             class_id = :class_id,
             consultant_id = :consultant_id,
-            carecon_id = :carecon_id,
-            reserve_status_id = :reserve_status_id
+            carecon_id = :carecon_id
         WHERE id = :id
     ';
 
@@ -65,10 +65,16 @@ try {
     $stmt->bindValue(':class_id', $class_id, PDO::PARAM_INT);
     $stmt->bindValue(':consultant_id', $consultant_id, PDO::PARAM_INT);
     $stmt->bindValue(':carecon_id', $carecon_id, PDO::PARAM_INT);
-    $stmt->bindValue(':reserve_status_id', $status_id, PDO::PARAM_INT);
 
     $stmt->execute();
 
+    if ($stmt->rowCount() === 0) {
+        $_SESSION["err_msg"] = "編集できませんでした";
+        header('location:schedule.php');
+        exit();
+    } else {
+        $_SESSION["msg"] = "編集完了しました";
+    }
     header('Location:schedule.php');
     exit;
 } catch (PDOException $e) {

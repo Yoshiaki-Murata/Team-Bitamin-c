@@ -1,4 +1,5 @@
 <?php require_once __DIR__ . '/../inc/function.php';
+check_logined();
 
 $db = db_connect();
 
@@ -60,6 +61,15 @@ try {
     $stmt->bindValue(':reserve_status_id', $reserve_status_id, PDO::PARAM_INT);
 
     $stmt->execute();
+
+    if ($stmt->rowCount() === 0) {
+        $_SESSION["err_msg"] = "追加できませんでした";
+        header('location:schedule.php');
+        exit();
+    } else {
+        $_SESSION["msg"] = "追加完了しました";
+    }
+
 
     header('Location:schedule.php');
     exit;

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../inc/function.php';
+check_logined();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
@@ -27,6 +28,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':name', $name, PDO::PARAM_STR);
         $stmt->execute();
+
+        if ($stmt->rowCount() === 0) {
+            $_SESSION["err_msg"] = "追加できませんでした";
+            header('location:consuls.php');
+            exit();
+        } else {
+            $_SESSION["msg"] = "追加完了しました";
+        }
+
 
         header('Location: consuls.php');
         exit();

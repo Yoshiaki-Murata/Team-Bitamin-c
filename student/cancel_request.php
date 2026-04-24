@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../inc/function.php";
+check_logined_student();
 ?>
 
 
@@ -58,13 +59,13 @@ $methods = $method_stmt->fetchAll(PDO::FETCH_ASSOC);
       </table>
 
       <p id="description">キャンセル理由(必須)をご記入下さい。<br>
-        面談方法の変更については面談前日午前中までに、LINE又は事務局まで直接お申し出下さい。</p>
+        面談方法の変更(対面/zoom)については面談前日午前中までに、LINE又は事務局まで直接お申し出下さい。</p>
 
       <form action="./cancel_request_do.php" method="post" id="cancelForm">
 
         <textarea name="text" id="js-text" class="form-control mb-3" rows="3" required></textarea>
 
-        <div class="mt-3">
+        <div class="mt-3 text-center">
           <button type="button"
             class="btn btn-primary"
             id="js-open">

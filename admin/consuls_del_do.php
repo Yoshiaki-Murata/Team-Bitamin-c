@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../inc/function.php';
+check_logined();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
@@ -12,6 +13,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
+
+
+        if ($stmt->rowCount() === 0) {
+            $_SESSION["err_msg"] = "削除できませんでした";
+            header('location:consuls.php');
+            exit();
+        } else {
+            $_SESSION["msg"] = "削除完了しました";
+        }
+
 
         header('Location: consuls.php');
         exit();

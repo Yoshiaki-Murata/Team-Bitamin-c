@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../inc/function.php';
+check_logined();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -43,6 +44,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
 
     $db->commit();
+
+
+    if ($stmt->rowCount() === 0) {
+      $_SESSION["err_msg"] = "削除できませんでした";
+      header('location:reservation.php?id=' . $_POST["id"]);
+      exit();
+    } else {
+      $_SESSION["msg"] = "削除完了しました";
+    }
+
 
     header('Location: reservation.php');
     exit;

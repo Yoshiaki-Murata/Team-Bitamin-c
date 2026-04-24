@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../inc/function.php';
+check_logined();
 
 $db = db_connect();
 $consultants = [];
@@ -23,6 +24,21 @@ require_once './../inc/header_admin.php';
   <div class="l-wrapper">
 
     <h1 class="c-title">講師一覧</h1>
+
+    <?php if (!empty($_SESSION["msg"])): ?>
+      <p class="alert alert-success" role="alert">
+        <?php echo $_SESSION["msg"];
+        unset($_SESSION["msg"]);
+        ?>
+      </p>
+    <?php endif; ?>
+    <?php if (!empty($_SESSION["err_msg"])): ?>
+      <p class="alert alert-danger" role="alert">
+        <?php echo $_SESSION["err_msg"];
+        unset($_SESSION["err_msg"]);
+        ?>
+      </p>
+    <?php endif; ?>
     <div class="mb-3">
       <button type="button"
         class="btn btn-info"
@@ -77,7 +93,7 @@ require_once './../inc/header_admin.php';
             <tr>
               <td>
                 <span class="fw-semibold">
-                  <?= h($consul['name']) ?>
+                  <?php echo h($consul['name']) ?>
                 </span>
               </td>
               <td class="text-center">
@@ -86,8 +102,8 @@ require_once './../inc/header_admin.php';
                     class="btn btn-primary btn-sm edit-btn"
                     data-bs-toggle="modal"
                     data-bs-target="#editConsultantModal"
-                    data-id="<?= h($consul['id']); ?>"
-                    data-name="<?= h($consul['name']); ?>">
+                    data-id="<?php echo h($consul['id']); ?>"
+                    data-name="<?php echo h($consul['name']); ?>">
                     編集
                   </button>
 
@@ -95,7 +111,8 @@ require_once './../inc/header_admin.php';
                     class="btn btn-danger btn-sm delete-btn"
                     data-bs-toggle="modal"
                     data-bs-target="#delConsultantModal"
-                    data-id="<?= h($consul['id']); ?>">
+                    data-id="<?php echo h($consul['id']); ?>"
+                    data-name="<?php echo h($consul['name']); ?>">
                     削除
                   </button>
                 </div>
@@ -143,7 +160,12 @@ require_once './../inc/header_admin.php';
 
           <form action="consuls_del_do.php" method="post">
             <div class="modal-body">
-              <p>このコンサルタントを削除しますか？</p>
+              <dl class="row">
+                <dt class="col-sm-3">講師名</dt>
+                <dd class="col-sm-9" id="del-name"></dd>
+              </dl>
+
+              <p>この講師を削除しますか？</p>
 
               <!-- idを送る -->
               <input type="hidden" name="id" id="delete-id">
@@ -162,6 +184,7 @@ require_once './../inc/header_admin.php';
 </body>
 
 <script>
+  // 編集
   document.addEventListener('DOMContentLoaded', () => {
     const editButtons = document.querySelectorAll('.edit-btn');
 
@@ -176,13 +199,17 @@ require_once './../inc/header_admin.php';
     });
   });
 
+  // 削除
   document.addEventListener('DOMContentLoaded', () => {
     const deleteButtons = document.querySelectorAll('.delete-btn');
 
     deleteButtons.forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-id');
+        const name = btn.getAttribute('data-name');
+
         document.getElementById('delete-id').value = id;
+        document.getElementById('del-name').textContent = name;
       });
     });
   });

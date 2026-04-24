@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../inc/function.php';
+check_logined();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -82,6 +83,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindValue(':status', $status, PDO::PARAM_INT);
     $stmt->bindValue(':slot_id', $slot_id, PDO::PARAM_INT);
     $stmt->execute();
+
+
+    if ($stmt->execute()) {
+
+      $_SESSION["msg"] = "編集完了しました";
+    } else {
+      $_SESSION["err_msg"] = "編集できませんでした";
+      exit();
+    }
   } catch (PDOException $e) {
     die('エラー: ' . $e->getMessage());
   }

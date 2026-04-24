@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../inc/function.php';
+check_logined();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
@@ -26,6 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindValue(':name', $name, PDO::PARAM_STR);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
+
+
+        if ($stmt->rowCount() === 0) {
+            $_SESSION["err_msg"] = "編集できませんでした";
+            header('location:consuls.php');
+            exit();
+        } else {
+            $_SESSION["msg"] = "編集完了しました";
+        }
 
         header('Location: consuls.php');
         exit();
