@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- ホスト: 127.0.0.1
--- 生成日時: 2026-04-21 07:38:49
+-- 生成日時: 2026-04-24 09:20:18
 -- サーバのバージョン： 10.4.32-MariaDB
 -- PHP のバージョン: 8.2.12
 
@@ -39,7 +39,8 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `name`, `password`, `login_id`) VALUES
-(2, '我管理人', 46637269, 'admin');
+(2, '我管理人', 46637269, 'admin'),
+(8, 'まつうら', 11111111, 'matsuura');
 
 -- --------------------------------------------------------
 
@@ -62,6 +63,13 @@ CREATE TABLE `apply_lists` (
   `res_method_name` varchar(50) DEFAULT NULL COMMENT '初期データ',
   `carecon_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- テーブルのデータのダンプ `apply_lists`
+--
+
+INSERT INTO `apply_lists` (`id`, `reserve_info_id`, `apply_detail`, `apply_status_id`, `apply_datetime`, `res_date`, `res_time`, `res_line`, `res_student_name`, `res_class_name`, `res_consultant_name`, `res_method_name`, `carecon_id`) VALUES
+(31, 41, '小松さんと変更したい', 3, '2026-04-24 15:02:57', '2026-04-03', '10:00～', 1, '小倉', '', '', '対面', 1);
 
 -- --------------------------------------------------------
 
@@ -178,8 +186,8 @@ CREATE TABLE `consultants` (
 
 INSERT INTO `consultants` (`id`, `name`) VALUES
 (1, '村田よしあき'),
-(2, 'アンドリュー'),
-(4, '中嶋茂雄');
+(5, '内野'),
+(6, '内野');
 
 -- --------------------------------------------------------
 
@@ -237,13 +245,7 @@ CREATE TABLE `reservation_infos` (
 --
 
 INSERT INTO `reservation_infos` (`id`, `slot_id`, `student_id`, `method_id`) VALUES
-(10, 14, 18, 1),
-(11, 15, 28, 1),
-(12, 16, 26, 1),
-(15, 20, 18, 1),
-(17, 21, 28, 1),
-(18, 22, 21, 2),
-(19, 17, 17, 1);
+(41, 34, 39, 1);
 
 -- --------------------------------------------------------
 
@@ -267,18 +269,7 @@ CREATE TABLE `reservation_slots` (
 --
 
 INSERT INTO `reservation_slots` (`id`, `date`, `time_id`, `class_id`, `consultant_id`, `carecon_id`, `reserve_status_id`, `lines_id`) VALUES
-(14, '2026-04-25', 1, NULL, NULL, 1, 2, 1),
-(15, '2026-04-25', 2, NULL, NULL, 1, 2, 1),
-(16, '2026-04-25', 3, NULL, NULL, 1, 2, 1),
-(17, '2026-04-25', 1, 12, 4, 2, 2, 2),
-(18, '2026-04-25', 2, NULL, NULL, 2, 1, 2),
-(19, '2026-04-25', 3, NULL, NULL, 2, 1, 2),
-(20, '2026-05-02', 1, NULL, NULL, 1, 2, 1),
-(21, '2026-05-02', 2, NULL, NULL, 1, 2, 1),
-(22, '2026-05-02', 3, NULL, NULL, 1, 2, 1),
-(23, '2026-05-02', 1, NULL, NULL, 2, 1, 2),
-(24, '2026-05-02', 2, NULL, NULL, 2, 1, 2),
-(25, '2026-05-02', 3, NULL, NULL, 2, 1, 2);
+(34, '2026-04-03', 1, NULL, 1, 2, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -323,12 +314,10 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`id`, `name`, `number`, `class_id`, `course_id`, `status_id`, `password`, `admission_date`, `graduation_date`, `login_id`) VALUES
-(17, '村田よしあき', '19', 3, 2, 1, 99999999, '2025-11-05', '2026-04-30', '2025116c19'),
-(18, '江原実里', '02', 3, 2, 1, 29514223, '2025-11-05', '2026-04-30', '2025116c02'),
-(21, '生間如人', '01', 1, 1, 1, 28569558, '2025-12-04', '2026-05-31', '2025126a01'),
-(26, '神矢茂雄', '06', 2, 2, 1, 36572696, '2026-03-05', '2026-08-31', '2026036b06'),
-(27, '林 晴翔', '11', 7, 1, 1, 52872893, '2026-04-06', '2026-09-30', '2026046g11'),
-(28, '梅崎竜之介', '01', 3, 2, 1, 43934686, '2025-11-05', '2026-04-30', '2025116c01');
+(34, '梅崎竜之介', '01', 3, 2, 1, 11111111, '2026-04-01', '2026-04-30', '2025116c01'),
+(36, '大古場', '03', 3, 2, 1, 22222222, '2026-04-01', '2026-04-30', '2025116c03'),
+(38, '梅崎竜之介', '01', 3, 2, 2, 11111111, '2026-04-01', '2026-04-30', '2025116c55'),
+(39, '小倉', '04', 3, 1, 1, 11111111, '2026-04-01', '2026-04-30', '2025116c04');
 
 -- --------------------------------------------------------
 
@@ -382,7 +371,7 @@ INSERT INTO `times` (`id`, `time`) VALUES
 --
 ALTER TABLE `admins`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `admin-password` (`password`);
+  ADD UNIQUE KEY `login_id` (`login_id`);
 
 --
 -- テーブルのインデックス `apply_lists`
@@ -492,13 +481,13 @@ ALTER TABLE `times`
 -- テーブルの AUTO_INCREMENT `admins`
 --
 ALTER TABLE `admins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- テーブルの AUTO_INCREMENT `apply_lists`
 --
 ALTER TABLE `apply_lists`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- テーブルの AUTO_INCREMENT `apply_status`
@@ -528,7 +517,7 @@ ALTER TABLE `classes`
 -- テーブルの AUTO_INCREMENT `consultants`
 --
 ALTER TABLE `consultants`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- テーブルの AUTO_INCREMENT `courses`
@@ -546,13 +535,13 @@ ALTER TABLE `methods`
 -- テーブルの AUTO_INCREMENT `reservation_infos`
 --
 ALTER TABLE `reservation_infos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- テーブルの AUTO_INCREMENT `reservation_slots`
 --
 ALTER TABLE `reservation_slots`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- テーブルの AUTO_INCREMENT `reserve_status`
@@ -564,7 +553,7 @@ ALTER TABLE `reserve_status`
 -- テーブルの AUTO_INCREMENT `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- テーブルの AUTO_INCREMENT `student_status`
