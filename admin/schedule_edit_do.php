@@ -75,6 +75,7 @@ try {
     } else {
         $_SESSION["msg"] = "編集完了しました";
     }
+
     header('Location:schedule.php');
     exit;
 } catch (PDOException $e) {
