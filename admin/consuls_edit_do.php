@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
         if ($stmt->rowCount() === 0) {
-            $_SESSION["err_msg"] = "編集できませんでした";
+            $_SESSION["msg"] = "変更はありません";
             header('location:consuls.php');
             exit();
         } else {
